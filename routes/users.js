@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-
 // load up the user model
 var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
@@ -59,9 +58,9 @@ router.post('/register', function(req, res){
     var errors = req.validationErrors();
 
     if(errors){
-        res.render('register',{
-            errors:errors
-        });
+         res.render('register',{
+             errors:errors
+         });
     } else {
         var newUserMysql = {
             username: username,
@@ -101,12 +100,12 @@ passport.use(new LocalStrategy(
         if (err)
             return done(err);
         if (!rows.length) {
-            return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
+            return done(null, false, {message: 'Invalid username'}); // req.flash is the way to set flashdata using connect-flash
         }
 
         // if the user is found but the password is wrong
         if (!bcrypt.compareSync(password, rows[0].password))
-            return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
+            return done(null, false, {message: 'Invalid password'}); // create the loginMessage and save it to session as flashdata
 
         // all is well, return successful user
         return done(null, rows[0]);
@@ -125,7 +124,7 @@ passport.deserializeUser(function(id, done) {
 });
 
 router.post('/login',
-  passport.authenticate('local', {successRedirect:'/', failureRedirect:'/users/login',failureFlash: true}),
+  passport.authenticate('local', {successRedirect:'/', failureRedirect:'/users/login', badRequestMessage:'Please enter username and password' , failureFlash: true}),
   function(req, res) {
     res.redirect('/');
   });

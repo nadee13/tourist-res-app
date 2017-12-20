@@ -37,6 +37,7 @@ app.use(bodyParser.urlencoded({ //!!!different
 	extended: true
 }));
 app.use(cookieParser());
+
 // Set Static Folder
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -45,7 +46,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
 	secret: 'vidyapathaisalwaysrunning',
 	resave: true,
-	saveUninitialized: true
+  saveUninitialized: true,
+      cookie: { maxAge: 60000 }
  } )); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
