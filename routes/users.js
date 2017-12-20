@@ -28,7 +28,6 @@ router.get('/login', function(req, res){
 router.post('/register', function(req, res){
 	var username = req.body.username;
     var password = req.body.password;
-    var password2 = req.body.password2;
     var firstname = req.body.firstname;
     var lastname = req.body.lastname;
     var streetnumber = req.body.streetnumber;
@@ -42,7 +41,6 @@ router.post('/register', function(req, res){
     // Validation
     req.checkBody('username', 'Username is required').notEmpty();
     req.checkBody('password', 'Password is required').notEmpty();
-    req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
     req.checkBody('firstname', 'First Name is required').notEmpty();
     req.checkBody('lastname', 'Last Name is required').notEmpty();
     req.checkBody('streetnumber', 'Street Number is required').notEmpty();
@@ -58,9 +56,9 @@ router.post('/register', function(req, res){
     var errors = req.validationErrors();
 
     if(errors){
-         res.render('register',{
-             errors:errors
-         });
+        res.render('register',{
+			errors:errors
+		});
     } else {
         var newUserMysql = {
             username: username,
