@@ -19,84 +19,95 @@ router.get('/register', function(req, res){
 	res.render('customer/register');
 });
 
-// Register User - Customer
-router.post('/register', function(req, res){
-	var email = req.body.email;
-    var password = req.body.password;
-    var firstname = req.body.firstname;
-    var lastname = req.body.lastname;
-    var streetnumber = req.body.streetnumber;
-    var streetname = req.body.streetname;
-    var city = req.body.city;
-    var gender = req.body.gender;
-    var phonenumber = req.body.phonenumber;
-    var dateofbirth = req.body.dateofbirth;
-    
-    // Validation
-    req.checkBody('email', 'Email is required').notEmpty();
-    req.checkBody('email', 'Email is not valid').isEmail();
-    req.checkBody('password', 'Password is required').notEmpty();
-    req.checkBody('firstname', 'First Name is required').notEmpty();
-    req.checkBody('lastname', 'Last Name is required').notEmpty();
-    req.checkBody('streetnumber', 'Street Number is required').notEmpty();
-    req.checkBody('streetname', 'Street Name is required').notEmpty();
-    req.checkBody('city', 'City is required').notEmpty();
-    req.checkBody('gender', 'Gender is required').notEmpty();
-    req.checkBody('phonenumber', 'Phone Number is required').notEmpty();
-    req.checkBody('dateofbirth', 'Date of Birth is required').notEmpty();
-    
-    var errors = req.validationErrors();
+//passport.serializeUser(function(user, done) {
+	//done(null, user.id);
+//	});
 
-    if(errors){
-        res.render('customer/register',{
-			errors:errors
-		});
-    } else {
-        connection.query('SELECT email FROM users WHERE email = ?', [email], function(err, rows){
-            if (err) 
-                return done(err);
-            if (rows.length) {
-                return done(null, false, req.flash('success', 'That email already exists.'));
-            }else {
+//passport.deserializeUser(function(id, done) {
+//	connection.query("SELECT * FROM users WHERE id = " + id, function(err, rows){
+//		done(err, rows[0]);
+//	})
+//});
+
+// Login
+passport.use(new LocalStrategy({
+		usernameField: 'email',
+		passwordField: 'password',
+		passReqToCallback: true
+	},
+	function(req, email, password, done) {
+		console.log(email);
+		connection.query("SELECT * FROM users WHERE email = ?",[email], function(err, rows){
+			if (err)
+				return done(err);
+			if (rows.length) {
+				return done(null, false, {message: 'Email already exists'}); // req.flash is the way to set flashdata using connect-flash
+			}else{
+                var email = req.body.email;
+                var password = req.body.password;
+                var firstname = req.body.firstname;
+                var lastname = req.body.lastname;
+                var streetnumber = req.body.streetnumber;
+                var streetname = req.body.streetname;
+                var city = req.body.city;
+                var gender = req.body.gender;
+                var phonenumber = req.body.phonenumber;
+                var dateofbirth = req.body.dateofbirth;
+                var userid;
+                
                 var newUserMysql = {
                     email: email,
                     password: bcrypt.hashSync(password, null, null),
                     active: 0
                 };
-        
-                var insertUserQuery = "INSERT INTO users ( email, password ) values (?,?)";
+
+                var insertUserQuery = "INSERT INTO users ( email, password, active ) values (?,?,?)";
                     console.log(insertUserQuery);
                     connection.query(insertUserQuery,[newUserMysql.email, newUserMysql.password, newUserMysql.active],function(err, rows) {
                         newUserMysql.id = rows.insertId;
-                        return done(null, newUserMysql);
+                        //return done(null, newUserMysql);
                     });
-        
-                var newCustomerMysql = {
-                    firstname: firstname,
-                    lastname: lastname,
-                    streetnumber: streetnumber,
-                    streetname: streetname,
-                    city: city,
-                    gender: gender,
-                    phonenumber: phonenumber,
-                    dateofbirth: dateofbirth,
-                    userid: newUserMysql.id
-                };
-        
-                var insertCustomerQuery = "INSERT INTO users ( firstname, lastname, streetnumber, streetname, city, gender, phonenumber, dateofbirth, userid: newUserMysql.id ) values (?,?,?,?,?,?,?,?,?)";
-                console.log(insertCustomerQuery);
-                connection.query(insertCustomerQuery, [newCustomerMysql.firstname, newCustomerMysql.lastname, newCustomerMysql.streetnumber, newCustomerMysql.streetname,
-                                    newCustomerMysql.city, newCustomerMysql.gender, newCustomerMysql.phonenumber, newCustomerMysql.dateofbirth, newCustomerMysql.userid],function(err, rows) {
-                    newCustomerMysql.id = rows.insertId;
-                    return done(null, newCustomerMysql);
-                });
-        
+
+                    connection.query('SELECT id FROM users WHERE email = "nadeeshawi13@gmail.com"', function(err, rows){
+                        userid = rows[0].id;
+                        
+                        var newCustomerMysql = {
+                            firstname: firstname,
+                            lastname: lastname,
+                            streetnumber: streetnumber,
+                            streetname: streetname,
+                            city: city,
+                            gender: gender,
+                            phonenumber: phonenumber,
+                            dateofbirth: dateofbirth,
+                            userid: userid
+                        };
+                        //console.log('newUserMysql.id: ' + newUserMysql.id);
+                        var insertCustomerQuery = "INSERT INTO customers ( firstname, lastname, streetnumber, streetname, city, gender, phonenumber, dateofbirth, userid) values (?,?,?,?,?,?,?,?,?)";
+                        console.log(insertCustomerQuery);
+                        connection.query(insertCustomerQuery, [newCustomerMysql.firstname, newCustomerMysql.lastname, newCustomerMysql.streetnumber, newCustomerMysql.streetname,
+                                            newCustomerMysql.city, newCustomerMysql.gender, newCustomerMysql.phonenumber, newCustomerMysql.dateofbirth, newCustomerMysql.userid],function(err, rows) {
+                       
+                            //return done(null, newCustomerMysql);
+                        });
+                    });
+
                 req.flash('success_msg', 'You are registered. Please await confirmation.');
-                //res.redirect('/login');
             }
-        });
-    
-    }    
-});
+			// all is well, return successful user
+			return done(null, rows[0]);
+		});
+	}
+));
+
+// Register User - Customer
+router.post('/register',
+    passport.authenticate('local', {
+        successRedirect:'/login', 
+        failureRedirect:'/customer/register', 
+        badRequestMessage:'Invalid Registration', 
+        failureFlash: true
+    })
+);
 
 module.exports = router;
