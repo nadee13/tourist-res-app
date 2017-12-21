@@ -14,8 +14,8 @@ var connection = mysql.createConnection({
 connection.query('USE touristappdatabase');
 
 //Profile
-router.get('/', ensureAuthenticated, function(req, res){
-	res.render('customer/home');
+router.get('/home', ensureAuthenticated, function(req, res){
+	res.render('admin/home');
 });
 
 function ensureAuthenticated(req, res, next){
@@ -23,16 +23,17 @@ function ensureAuthenticated(req, res, next){
 		return next();
 	} else {
 		req.flash('error_msg','You are not logged in');
-		res.redirect('/customer/login');
+		res.redirect('/admin/login');
 	}
 }
 
-//Register
+// Register
 router.get('/register', function(req, res){
-	res.render('customer/register');
+	res.render('admin/register');
 });
 
-passport.use('local-customer', new LocalStrategy({
+// Login
+passport.use('local-admin', new LocalStrategy({
 		usernameField: 'email',
 		passwordField: 'password',
 		passReqToCallback: true
@@ -47,15 +48,10 @@ passport.use('local-customer', new LocalStrategy({
 			}else{
                 var email = req.body.email;
                 var password = req.body.password;
-                var firstname = req.body.firstname;
-                var lastname = req.body.lastname;
                 var streetnumber = req.body.streetnumber;
                 var streetname = req.body.streetname;
                 var city = req.body.city;
-                var gender = req.body.gender;
                 var phonenumber = req.body.phonenumber;
-                var dateofbirth = req.body.dateofbirth;
-                var userid;
                 
                 var newUserMysql = {
                     email: email,
@@ -66,29 +62,12 @@ passport.use('local-customer', new LocalStrategy({
                     phonenumber: phonenumber
                 };
 
-                var insertUserQuery = "INSERT INTO users ( email, password, streetnumber, streetname, city, phonenumber ) values (?,?,?,?,?,?)";
-                    console.log(insertUserQuery);
-                    connection.query(insertUserQuery,[newUserMysql.email, newUserMysql.password, newUserMysql.streetnumber, newUserMysql.streetname,
-                        newUserMysql.city, newUserMysql.phonenumber],function(err, rows) {
-                        newUserMysql.id = rows.insertId;
-                    });
-
-                    connection.query("SELECT id FROM users WHERE email = ?",[email], function(err, rows){
-                        console.log('rows[0].id' + rows);
-                        userid = rows[0].id;
-                        
-                        var newCustomerMysql = {
-                            firstname: firstname,
-                            lastname: lastname,
-                            gender: gender,
-                            dateofbirth: dateofbirth,
-                            userid: userid
-                        };
-                        var insertCustomerQuery = "INSERT INTO customers ( firstname, lastname, gender, dateofbirth, userid) values (?,?,?,?,?)";
-                        console.log(insertCustomerQuery);
-                        connection.query(insertCustomerQuery, [newCustomerMysql.firstname, newCustomerMysql.lastname, newCustomerMysql.gender, newCustomerMysql.dateofbirth, newCustomerMysql.userid],function(err, rows) {
-                        });
-                    });
+                var insertUserQuery = "INSERT INTO users ( email, password, streetnumber, streetname, city, phonenumber) values (?,?,?,?,?,?)";
+                console.log(insertUserQuery);
+                connection.query(insertUserQuery,[newUserMysql.email, newUserMysql.password, newUserMysql.streetnumber, 
+                            newUserMysql.streetname, newUserMysql.city, newUserMysql.phonenumber],function(err, rows) {
+                    newUserMysql.id = rows.insertId;
+                });
 
                 req.flash('success_msg', 'Please verify your email and await confirmation.');
             }
@@ -98,9 +77,9 @@ passport.use('local-customer', new LocalStrategy({
 ));
 
 router.post('/register',
-    passport.authenticate('local-customer', {
+    passport.authenticate('local-admin', {
         successRedirect:'/login', 
-        failureRedirect:'/customer/register', 
+        failureRedirect:'/admin/register', 
         badRequestMessage:'Invalid Registration', 
         failureFlash: true
     })
@@ -108,7 +87,7 @@ router.post('/register',
 
 //Login
 router.get('/login', function(req, res){
-	res.render('login');
+	res.render('admin/login');
 });
 
 passport.serializeUser(function(user, done) {
@@ -121,7 +100,7 @@ passport.deserializeUser(function(id, done) {
 	})
 });
 
-passport.use('local-login-customer', new LocalStrategy({
+passport.use('local-login-admin', new LocalStrategy({
 		usernameField: 'email',
 		passwordField: 'password',
 		passReqToCallback: true
@@ -149,10 +128,10 @@ passport.use('local-login-customer', new LocalStrategy({
 ));
 
 router.post('/login',
-	passport.authenticate('local-login-customer', {successRedirect:'/', failureRedirect:'/login', badRequestMessage:'Please enter email and password' , failureFlash: true}),
+	passport.authenticate('local-login-admin', {successRedirect:'/admin/home', failureRedirect:'/admin/login', badRequestMessage:'Please enter email and password' , failureFlash: true}),
 	function(req, res) {
 		console.log(req);
-	res.redirect('/customer/home');
+	res.redirect('/admin/home');
 });
 
 //Logout
@@ -161,7 +140,7 @@ router.get('/logout', function(req, res){
 
 	req.flash('success_msg', 'You are logged out');
 
-	res.redirect('/customer/login');
+	res.redirect('/admin/login');
 });
 
 module.exports = router;

@@ -17,7 +17,8 @@ var passport = require('passport');
 var flash    = require('connect-flash');
 
 var index = require('./routes/index');
-//var users = require('./routes/users');
+var admin = require('./routes/admin');
+var agency = require('./routes/agency');
 var customer = require('./routes/customer');
 
 // configuration ===============================================================
@@ -88,7 +89,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // routes ======================================================================
 //require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 app.use('/', index);
-//app.use('/users', users);
+app.use('/admin', admin);
+app.use('/agency', agency);
 app.use('/customer', customer);
 // launch ======================================================================
 app.listen(port);
