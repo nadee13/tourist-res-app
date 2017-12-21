@@ -16,8 +16,9 @@ var port     = process.env.PORT || 8080;
 var passport = require('passport');
 var flash    = require('connect-flash');
 
-var routes = require('./routes/home');
-var users = require('./routes/users');
+var index = require('./routes/index');
+//var users = require('./routes/users');
+var customer = require('./routes/customer');
 
 // configuration ===============================================================
 // connect to our database
@@ -86,8 +87,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // routes ======================================================================
 //require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
-app.use('/', routes);
-app.use('/users', users);
+app.use('/', index);
+//app.use('/users', users);
+app.use('/customer', customer);
 // launch ======================================================================
 app.listen(port);
 console.log('The magic happens on port ' + port);
