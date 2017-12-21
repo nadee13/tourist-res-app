@@ -11,7 +11,21 @@ var connection = mysql.createConnection({
     password : 'admin'
   });
 
-  connection.query('USE touristappdatabase');
+connection.query('USE touristappdatabase');
+
+//Profile
+router.get('/home', ensureAuthenticated, function(req, res){
+	res.render('agency/home');
+});
+
+function ensureAuthenticated(req, res, next){
+	if(req.isAuthenticated()){
+		return next();
+	} else {
+		req.flash('error_msg','You are not logged in');
+		res.redirect('/agency/login');
+	}
+}
 
 // Register
 router.get('/register', function(req, res){
@@ -85,5 +99,63 @@ router.post('/register',
         failureFlash: true
     })
 );
+
+//Login
+router.get('/login', function(req, res){
+	res.render('agency/login');
+});
+
+passport.serializeUser(function(user, done) {
+	done(null, user.id);
+	});
+
+passport.deserializeUser(function(id, done) {
+	connection.query("SELECT * FROM users WHERE id = " + id, function(err, rows){
+		done(err, rows[0]);
+	})
+});
+
+passport.use('local-login-agency', new LocalStrategy({
+		usernameField: 'email',
+		passwordField: 'password',
+		passReqToCallback: true
+	},
+	function(req, email, password, done) {
+		connection.query("SELECT * FROM users WHERE email = ?",[email], function(err, rows){
+			if (err)
+				return done(err);
+			if (!rows.length) {
+				return done(null, false, {message: 'Invalid email'}); // req.flash is the way to set flashdata using connect-flash
+			}
+
+			// if the user is found but the password is wrong
+			if (!bcrypt.compareSync(password, rows[0].password))
+				return done(null, false, {message: 'Invalid password'}); // create the loginMessage and save it to session as flashdata
+
+			// if the user is found but the password is wrong
+			if (!rows[0].active)
+				return done(null, false, {message: 'User not yet confirmed'});
+
+			// all is well, return successful user
+			return done(null, rows[0]);
+		});
+	}
+));
+
+router.post('/login',
+	passport.authenticate('local-login-agency', {successRedirect:'/agency/home', failureRedirect:'/agency/login', badRequestMessage:'Please enter email and password' , failureFlash: true}),
+	function(req, res) {
+		console.log(req);
+	res.redirect('/agency/home');
+});
+
+//Logout
+router.get('/logout', function(req, res){
+	req.logout();
+
+	req.flash('success_msg', 'You are logged out');
+
+	res.redirect('/agency/login');
+});
 
 module.exports = router;

@@ -14,7 +14,7 @@ var connection = mysql.createConnection({
 connection.query('USE touristappdatabase');
 
 //Profile
-router.get('/', ensureAuthenticated, function(req, res){
+router.get('/home', ensureAuthenticated, function(req, res){
 	res.render('customer/home');
 });
 
@@ -108,7 +108,7 @@ router.post('/register',
 
 //Login
 router.get('/login', function(req, res){
-	res.render('login');
+	res.render('customer/login');
 });
 
 passport.serializeUser(function(user, done) {
@@ -149,7 +149,7 @@ passport.use('local-login-customer', new LocalStrategy({
 ));
 
 router.post('/login',
-	passport.authenticate('local-login-customer', {successRedirect:'/', failureRedirect:'/login', badRequestMessage:'Please enter email and password' , failureFlash: true}),
+	passport.authenticate('local-login-customer', {successRedirect:'/customer/home', failureRedirect:'/customer/login', badRequestMessage:'Please enter email and password' , failureFlash: true}),
 	function(req, res) {
 		console.log(req);
 	res.redirect('/customer/home');
