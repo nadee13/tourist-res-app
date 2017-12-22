@@ -47,7 +47,9 @@ passport.use('local-admin', new LocalStrategy({
 				return done(null, false, {message: 'Email already exists'}); // req.flash is the way to set flashdata using connect-flash
 			}else{
                 var email = req.body.email;
-                var password = req.body.password;
+				var password = req.body.password;
+				var firstname = req.body.firstname;
+                var lastname = req.body.lastname;
                 var streetnumber = req.body.streetnumber;
                 var streetname = req.body.streetname;
                 var city = req.body.city;
@@ -67,7 +69,22 @@ passport.use('local-admin', new LocalStrategy({
                 connection.query(insertUserQuery,[newUserMysql.email, newUserMysql.password, newUserMysql.streetnumber, 
                             newUserMysql.streetname, newUserMysql.city, newUserMysql.phonenumber],function(err, rows) {
                     newUserMysql.id = rows.insertId;
-                });
+				});
+				
+				connection.query("SELECT id FROM users WHERE email = ?",[email], function(err, rows){
+					console.log('rows[0].id' + rows);
+					userid = rows[0].id;
+					
+					var newAdminMysql = {
+						firstname: firstname,
+						lastname: lastname,
+						userid: userid
+					};
+					var insertAdminQuery = "INSERT INTO admins ( firstname, lastname, userid) values (?,?,?)";
+					console.log(insertAdminQuery);
+					connection.query(insertAdminQuery, [newAdminMysql.firstname, newAdminMysql.lastname, newAdminMysql.userid],function(err, rows) {
+					});
+				});
 
                 req.flash('success_msg', 'Please verify your email and await confirmation.');
             }
@@ -78,7 +95,7 @@ passport.use('local-admin', new LocalStrategy({
 
 router.post('/register',
     passport.authenticate('local-admin', {
-        successRedirect:'/login', 
+        successRedirect:'/admin/login', 
         failureRedirect:'/admin/register', 
         badRequestMessage:'Invalid Registration', 
         failureFlash: true
@@ -141,6 +158,12 @@ router.get('/logout', function(req, res){
 	req.flash('success_msg', 'You are logged out');
 
 	res.redirect('/admin/login');
+});
+
+router.get('/accounts', function(req, res){
+	connection.query("SELECT * FROM users", function(err, data){
+		res.render('admin/accounts', data);
+	});
 });
 
 module.exports = router;

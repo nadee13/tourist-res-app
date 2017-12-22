@@ -52,6 +52,16 @@ connection.connect(function(err) {
         on delete cascade
     )`;
 
+    var createAdmin = `create table if not exists admins(
+      id int primary key auto_increment,
+      firstname varchar(255) not null,
+      lastname varchar(255) not null,
+      userid INT NOT null,
+      foreign key (userid)
+        references users (id)
+        on delete cascade
+    )`;
+
   connection.query(createUser, function(err, result) {
     if (err) {
       console.log(err.message);
@@ -71,6 +81,13 @@ connection.connect(function(err) {
       console.log(err.message);
     }
     console.log("Agency table created");
+  });
+
+  connection.query(createAdmin, function(err, result) {
+    if (err) {
+      console.log(err.message);
+    }
+    console.log("Admin table created");
   });
 });
 

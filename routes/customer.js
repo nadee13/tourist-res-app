@@ -99,7 +99,7 @@ passport.use('local-customer', new LocalStrategy({
 
 router.post('/register',
     passport.authenticate('local-customer', {
-        successRedirect:'/login', 
+        successRedirect:'/customer/login', 
         failureRedirect:'/customer/register', 
         badRequestMessage:'Invalid Registration', 
         failureFlash: true

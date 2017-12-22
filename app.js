@@ -1,31 +1,27 @@
-// server.js
-
-// set up ======================================================================
-// get all the tools we need
 var express  = require('express');
+var app      = express();
+var path = require('path');
+// var server = require('http').Server(app);
+// var io = require('socket.io')(server);
+var port     = process.env.PORT || 8080;
 var session  = require('express-session');
 var exphbs = require('express-handlebars');
 var expressValidator = require('express-validator');
-var path = require('path');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 //var morgan = require('morgan');
-var app      = express();
-var port     = process.env.PORT || 8080;
-
 var passport = require('passport');
 var flash    = require('connect-flash');
+
+//Socket.io
+// server.listen(port, function(){
+//   console.log('Server listening at port ', port);
+// });
 
 var index = require('./routes/index');
 var admin = require('./routes/admin');
 var agency = require('./routes/agency');
 var customer = require('./routes/customer');
-
-// configuration ===============================================================
-// connect to our database
-
-//require('./config/passport')(passport); // pass passport for configuration
-
 
 // View Engine
 app.set('views', path.join(__dirname, 'views'));
@@ -42,7 +38,6 @@ app.use(cookieParser());
 
 // Set Static Folder
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 // required for passport
 app.use(session({
@@ -74,12 +69,14 @@ app.use(expressValidator({
   }
 }));
 app.use(flash());
+
 // Global Vars
 app.use(function (req, res, next) {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');
     res.locals.user = req.user || null;
+    if (res.locals.user!= null) var role = res.locals.user.role;
     next();
   });
 
@@ -95,3 +92,12 @@ app.use('/customer', customer);
 // launch ======================================================================
 app.listen(port);
 console.log('The magic happens on port ' + port);
+
+
+
+// io.on('connection', function(client) {
+//   client.on('join', function(data) {
+//       console.log(data);
+//       io.emit('join', data);  //this code sending data from server to client
+//   });
+// });

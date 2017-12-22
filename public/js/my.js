@@ -7,4 +7,11 @@ $(document).ready(function(){
             yearRange: '1900:2018'
         });
     });
+
+    $("#getaccounts").on("click", function(){
+        $.get('/admin/accounts', function(response) {
+            console.log(response);
+        });
+    });
+
 });

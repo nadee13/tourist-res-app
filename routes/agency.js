@@ -93,7 +93,7 @@ passport.use('local-agency', new LocalStrategy({
 
 router.post('/register',
     passport.authenticate('local-agency', {
-        successRedirect:'/login', 
+        successRedirect:'/agency/login', 
         failureRedirect:'/agency/register', 
         badRequestMessage:'Invalid Registration', 
         failureFlash: true

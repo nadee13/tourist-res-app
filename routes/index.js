@@ -26,15 +26,6 @@ router.get('/logout', function(req, res){
 
  	res.redirect('/');
 });
-
-router.get('/register', function(req, res){
-	res.render('register');
-});
-
-router.get('/login', function(req, res){
-	res.render('login');
-});
-
 // function ensureAuthenticated(req, res, next){
 // 	if(req.isAuthenticated()){
 // 		return next();
