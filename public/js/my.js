@@ -9,7 +9,5 @@ $(document).ready(function(){
 
         $('.accounttable').DataTable();
     });
-
-        
-
+     
 });

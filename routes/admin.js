@@ -177,21 +177,30 @@ router.get('/accounts/customer', ensureAuthenticated, function(req, res){
 	});
 });
 
-router.get('/accounts/customer/:userid', function(req, res){
-	console.log(req.params.userid);
-	connection.query("select customers.firstname, customers.lastname, users.email, users.active, " +  
-					 "users.verification, users.id " +
-					 " from users inner join customers on users.id" + 
-					 " = customers.userid where users.role = 'customer';", function(err, result){
+router.get('/accounts/customer/:userid', ensureAuthenticated, function(req, res){
+	connection.query("select users.id, customers.firstname, customers.lastname, users.email," 
+			+ " users.streetnumber, users.streetname, users.city, users.phonenumber, customers.gender, "
+			+ "customers.dateofbirth, users.active, users.verification from users inner join customers where" 
+			+ " users.id = customers.userid && users.id = " + req.params.userid , function(err, result){
 		if(err){
 			throw err;
 		} else {
 			var obj = {};
 			obj = {print: result};
-			res.render('admin/customeraccounts', obj);
+			res.render('admin/editcustomer', obj);
 		}
 	});
-	res.render('admin/viewcustomer', obj);
+});
+
+router.get('/save', function(req, res){
+	console.log('req.body.id ' + req.body.id);
+	connection.query("update users set active = " + req.body.active + " , verification = " + req.body.verification + " where id = " + req.body.userid , function(err, result){
+		if(err){
+			throw err;
+		} else {
+			req.flash('success_msg', 'Successfully updated.');
+		}
+	});
 });
 
 module.exports = router;

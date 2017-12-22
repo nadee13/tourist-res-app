@@ -7,21 +7,32 @@
 body {
   padding-top: 20px;
   padding-bottom: 20px;
-  margin-right: 200px;
-  margin-left: 200px;
 }
 h2{
   margin-top: 50px;
   margin-bottom: 40px;
 }
 
-#accountstable{
-  padding-top: 50px !important;
+nav{
+  padding-left: 10% !important;
+  padding-right: 10% !important;
 }
+
+.detailscon{
+  padding-top: 20px;
+  padding-left: 10% !important;
+  padding-right: 10% !important;
+}
+
+.topgap{
+  padding-top: 50px !important;
+  padding-left: 10% !important;
+  padding-right: 10% !important;
+}
+
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
-.marketing,
-.footer {
+.marketing {
   padding-right: 15px;
   padding-left: 15px;
 }
@@ -45,6 +56,7 @@ h2{
 /* Custom page footer */
 .footer {
   padding-top: 19px;
+  padding-left: 10% !important;
   color: #777;
   border-top: 1px solid #e5e5e5;
 }

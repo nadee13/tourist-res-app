@@ -12,7 +12,7 @@ var bodyParser = require('body-parser');
 //var morgan = require('morgan');
 var passport = require('passport');
 var flash    = require('connect-flash');
-
+var helpers = require('handlebars-helpers')();
 //Socket.io
 // server.listen(port, function(){
 //   console.log('Server listening at port ', port);
@@ -44,7 +44,7 @@ app.use(session({
 	secret: 'vidyapathaisalwaysrunning',
 	resave: true,
   saveUninitialized: true,
-      cookie: { maxAge: 60000 }
+      cookie: { maxAge: 6000000000 }
  } )); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
