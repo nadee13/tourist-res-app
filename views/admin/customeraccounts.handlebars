@@ -1,0 +1,28 @@
+{{> adminheader}}
+
+<div id="accountstable">
+<table id="example" class="table accountstable table-striped table-bordered" cellspacing="0" width="100%">
+    <t>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Active</th>
+            <th>Verified</th>
+            <th>Modify</th>
+        </tr>
+    </thead>
+    <tfoot>
+        {{#print}}
+        <tr>
+            <td>{{firstname}}</td>
+            <td>{{lastname}}</td>
+            <td>{{email}}</td>
+            <td>{{active}}</td>
+            <td>{{verification}}</td>
+            <td><a class="btn btn-success" href="/admin/accounts/customer/{{id}}" role="button">Edit</a></td>
+        </tr>
+        {{/print}}
+    </tfoot>
+</table>
+</div>

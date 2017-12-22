@@ -6,12 +6,10 @@ $(document).ready(function(){
             changeYear: true,
             yearRange: '1900:2018'
         });
+
+        $('.accounttable').DataTable();
     });
 
-    $("#getaccounts").on("click", function(){
-        $.get('/admin/accounts', function(response) {
-            console.log(response);
-        });
-    });
+        
 
 });

@@ -7,9 +7,16 @@
 body {
   padding-top: 20px;
   padding-bottom: 20px;
+  margin-right: 200px;
+  margin-left: 200px;
 }
 h2{
+  margin-top: 50px;
   margin-bottom: 40px;
+}
+
+#accountstable{
+  padding-top: 50px !important;
 }
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
@@ -17,6 +24,10 @@ h2{
 .footer {
   padding-right: 15px;
   padding-left: 15px;
+}
+
+.page-header{
+  margin-top: 50px; 
 }
 
 /* Custom page header */

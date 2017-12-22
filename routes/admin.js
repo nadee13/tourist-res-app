@@ -53,7 +53,9 @@ passport.use('local-admin', new LocalStrategy({
                 var streetnumber = req.body.streetnumber;
                 var streetname = req.body.streetname;
                 var city = req.body.city;
-                var phonenumber = req.body.phonenumber;
+				var phonenumber = req.body.phonenumber;
+				var userid;
+				var role;
                 
                 var newUserMysql = {
                     email: email,
@@ -61,13 +63,14 @@ passport.use('local-admin', new LocalStrategy({
                     streetnumber: streetnumber,
                     streetname: streetname,
                     city: city,
-                    phonenumber: phonenumber
+					phonenumber: phonenumber,
+					role: 'admin'
                 };
 
-                var insertUserQuery = "INSERT INTO users ( email, password, streetnumber, streetname, city, phonenumber) values (?,?,?,?,?,?)";
+                var insertUserQuery = "INSERT INTO users ( email, password, streetnumber, streetname, city, phonenumber, role) values (?,?,?,?,?,?,?)";
                 console.log(insertUserQuery);
                 connection.query(insertUserQuery,[newUserMysql.email, newUserMysql.password, newUserMysql.streetnumber, 
-                            newUserMysql.streetname, newUserMysql.city, newUserMysql.phonenumber],function(err, rows) {
+                            newUserMysql.streetname, newUserMysql.city, newUserMysql.phonenumber, newUserMysql.role],function(err, rows) {
                     newUserMysql.id = rows.insertId;
 				});
 				
@@ -160,10 +163,35 @@ router.get('/logout', function(req, res){
 	res.redirect('/admin/login');
 });
 
-router.get('/accounts', function(req, res){
-	connection.query("SELECT * FROM users", function(err, data){
-		res.render('admin/accounts', data);
+
+router.get('/accounts/customer', ensureAuthenticated, function(req, res){
+	connection.query("select customers.firstname, customers.lastname, users.email, users.active, " +  
+	                 "users.verification, users.id from users inner join customers on users.id = customers.userid where users.role = 'customer';", function(err, result){
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			obj = {print: result};
+			res.render('admin/customeraccounts', obj);
+		}
 	});
+});
+
+router.get('/accounts/customer/:userid', function(req, res){
+	console.log(req.params.userid);
+	connection.query("select customers.firstname, customers.lastname, users.email, users.active, " +  
+					 "users.verification, users.id " +
+					 " from users inner join customers on users.id" + 
+					 " = customers.userid where users.role = 'customer';", function(err, result){
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			obj = {print: result};
+			res.render('admin/customeraccounts', obj);
+		}
+	});
+	res.render('admin/viewcustomer', obj);
 });
 
 module.exports = router;

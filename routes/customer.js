@@ -54,7 +54,8 @@ passport.use('local-customer', new LocalStrategy({
                 var city = req.body.city;
                 var gender = req.body.gender;
                 var phonenumber = req.body.phonenumber;
-                var dateofbirth = req.body.dateofbirth;
+				var dateofbirth = req.body.dateofbirth;
+				var role;
                 var userid;
                 
                 var newUserMysql = {
@@ -63,13 +64,14 @@ passport.use('local-customer', new LocalStrategy({
                     streetnumber: streetnumber,
                     streetname: streetname,
                     city: city,
-                    phonenumber: phonenumber
+					phonenumber: phonenumber,
+					role: 'customer'
                 };
 
-                var insertUserQuery = "INSERT INTO users ( email, password, streetnumber, streetname, city, phonenumber ) values (?,?,?,?,?,?)";
+                var insertUserQuery = "INSERT INTO users ( email, password, streetnumber, streetname, city, phonenumber, role ) values (?,?,?,?,?,?,?)";
                     console.log(insertUserQuery);
                     connection.query(insertUserQuery,[newUserMysql.email, newUserMysql.password, newUserMysql.streetnumber, newUserMysql.streetname,
-                        newUserMysql.city, newUserMysql.phonenumber],function(err, rows) {
+                        newUserMysql.city, newUserMysql.phonenumber, newUserMysql.role],function(err, rows) {
                         newUserMysql.id = rows.insertId;
                     });
 
