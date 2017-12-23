@@ -15,7 +15,7 @@ var flash    = require('connect-flash');
 var helpers = require('handlebars-helpers')();
 //Socket.io
 // server.listen(port, function(){
-//   console.log('Server listening at port ', port);
+//   //console.log('Server listening at port ', port);
 // });
 
 var index = require('./routes/index');
@@ -28,7 +28,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({defaultLayout:'layout'}));
 app.set('view engine', 'handlebars');
 // set up our express application
-//app.use(morgan('dev')); // log every request to the console
+//app.use(morgan('dev')); // log every request to the //console
  // read cookies (needed for auth)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ //!!!different
@@ -97,7 +97,7 @@ console.log('The magic happens on port ' + port);
 
 // io.on('connection', function(client) {
 //   client.on('join', function(data) {
-//       console.log(data);
+//       //console.log(data);
 //       io.emit('join', data);  //this code sending data from server to client
 //   });
 // });

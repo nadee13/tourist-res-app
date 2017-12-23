@@ -39,7 +39,7 @@ passport.use('local-agency', new LocalStrategy({
 		passReqToCallback: true
 	},
 	function(req, email, password, done) {
-		console.log(email);
+		//console.log(email);
 		connection.query("SELECT * FROM users WHERE email = ?",[email], function(err, rows){
 			if (err)
 				return done(err);
@@ -67,7 +67,7 @@ passport.use('local-agency', new LocalStrategy({
                 };
 
                 var insertUserQuery = "INSERT INTO users ( email, password, streetnumber, streetname, city, phonenumber, role) values (?,?,?,?,?,?,?)";
-                    console.log(insertUserQuery);
+                    //console.log(insertUserQuery);
                     connection.query(insertUserQuery,[newUserMysql.email, newUserMysql.password, newUserMysql.streetnumber, 
                                 newUserMysql.streetname, newUserMysql.city, newUserMysql.phonenumber, newUserMysql.role],function(err, rows) {
                         newUserMysql.id = rows.insertId;
@@ -81,7 +81,7 @@ passport.use('local-agency', new LocalStrategy({
                             userid: userid
                         };
                         var insertAgencyQuery = "INSERT INTO agencies ( name, userid) values (?,?)";
-                        console.log(insertAgencyQuery);
+                        //console.log(insertAgencyQuery);
                         connection.query(insertAgencyQuery, [newAgencyMysql.name, newAgencyMysql.userid],function(err, rows) {
                         });
                     });
@@ -147,7 +147,7 @@ passport.use('local-login-agency', new LocalStrategy({
 router.post('/login',
 	passport.authenticate('local-login-agency', {successRedirect:'/agency/home', failureRedirect:'/agency/login', badRequestMessage:'Please enter email and password' , failureFlash: true}),
 	function(req, res) {
-		console.log(req);
+		//console.log(req);
 	res.redirect('/agency/home');
 });
 

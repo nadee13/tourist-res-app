@@ -39,7 +39,6 @@ passport.use('local-admin', new LocalStrategy({
 		passReqToCallback: true
 	},
 	function(req, email, password, done) {
-		console.log(email);
 		connection.query("SELECT * FROM users WHERE email = ?",[email], function(err, rows){
 			if (err)
 				return done(err);
@@ -48,8 +47,7 @@ passport.use('local-admin', new LocalStrategy({
 			}else{
                 var email = req.body.email;
 				var password = req.body.password;
-				var firstname = req.body.firstname;
-                var lastname = req.body.lastname;
+				var name = req.body.name;
                 var streetnumber = req.body.streetnumber;
                 var streetname = req.body.streetname;
                 var city = req.body.city;
@@ -68,24 +66,20 @@ passport.use('local-admin', new LocalStrategy({
                 };
 
                 var insertUserQuery = "INSERT INTO users ( email, password, streetnumber, streetname, city, phonenumber, role) values (?,?,?,?,?,?,?)";
-                console.log(insertUserQuery);
-                connection.query(insertUserQuery,[newUserMysql.email, newUserMysql.password, newUserMysql.streetnumber, 
+                    connection.query(insertUserQuery,[newUserMysql.email, newUserMysql.password, newUserMysql.streetnumber, 
                             newUserMysql.streetname, newUserMysql.city, newUserMysql.phonenumber, newUserMysql.role],function(err, rows) {
                     newUserMysql.id = rows.insertId;
 				});
 				
-				connection.query("SELECT id FROM users WHERE email = ?",[email], function(err, rows){
-					console.log('rows[0].id' + rows);
+				connection.query("SELECT id FROM users WHERE email = ?",[email], function(err, rows){					
 					userid = rows[0].id;
 					
 					var newAdminMysql = {
-						firstname: firstname,
-						lastname: lastname,
+						name: name,
 						userid: userid
 					};
-					var insertAdminQuery = "INSERT INTO admins ( firstname, lastname, userid) values (?,?,?)";
-					console.log(insertAdminQuery);
-					connection.query(insertAdminQuery, [newAdminMysql.firstname, newAdminMysql.lastname, newAdminMysql.userid],function(err, rows) {
+					var insertAdminQuery = "INSERT INTO admins ( name, userid) values (?,?)";
+					connection.query(insertAdminQuery, [newAdminMysql.name, newAdminMysql.userid],function(err, rows) {
 					});
 				});
 
@@ -127,12 +121,12 @@ passport.use('local-login-admin', new LocalStrategy({
 	},
 	function(req, email, password, done) {
 		connection.query("SELECT * FROM users WHERE email = ?",[email], function(err, rows){
+			////console.log('rows: ' + rows);
 			if (err)
 				return done(err);
 			if (!rows.length) {
 				return done(null, false, {message: 'Invalid email'}); // req.flash is the way to set flashdata using connect-flash
 			}
-
 			// if the user is found but the password is wrong
 			if (!bcrypt.compareSync(password, rows[0].password))
 				return done(null, false, {message: 'Invalid password'}); // create the loginMessage and save it to session as flashdata
@@ -148,10 +142,13 @@ passport.use('local-login-admin', new LocalStrategy({
 ));
 
 router.post('/login',
-	passport.authenticate('local-login-admin', {successRedirect:'/admin/home', failureRedirect:'/admin/login', badRequestMessage:'Please enter email and password' , failureFlash: true}),
+	passport.authenticate('local-login-admin', {
+		successRedirect:'/admin/home', 
+		failureRedirect:'/admin/login', 
+		badRequestMessage:'Please enter email and password' , 
+		failureFlash: true}),
 	function(req, res) {
-		console.log(req);
-	res.redirect('/admin/home');
+		res.redirect('/admin/home');
 });
 
 //Logout
@@ -187,20 +184,75 @@ router.get('/accounts/customer/:userid', ensureAuthenticated, function(req, res)
 		} else {
 			var obj = {};
 			obj = {print: result};
-			res.render('admin/editcustomer', obj);
+			res.render('admin/viewcustomer', obj);
 		}
 	});
 });
 
-router.get('/save', function(req, res){
-	console.log('req.body.id ' + req.body.id);
-	connection.query("update users set active = " + req.body.active + " , verification = " + req.body.verification + " where id = " + req.body.userid , function(err, result){
-		if(err){
-			throw err;
-		} else {
-			req.flash('success_msg', 'Successfully updated.');
+// Update Customer
+router.get('/accounts/customer/:userid/save', function(req, res){
+	res.render('admin/viewcustomer');
+});
+
+router.post('/accounts/customer/:userid/save',
+	function(req, res) {
+		connection.query("update users set active = " + req.body.active + " where id = " + req.params.userid , function(err, rows){
+			if (err)
+				return done(err);
+			else {
+				req.flash('success_msg', 'Successfully updated.');
+				res.redirect('/admin/accounts/customer/' + req.params.userid);
+			}
+		});
+	}
+);
+
+router.get('/accounts/customer/:userid/delete', function(req, res){
+	connection.query("delete from users where id = " + req.params.userid , function(err, rows){
+		if (err)
+			return done(err);
+		else {
+			req.flash('success_msg', 'Successfully deleted.');
+			res.redirect('/admin/accounts/customer');
 		}
 	});
 });
+
+//View Admin
+router.get('/accounts/admin', ensureAuthenticated, function(req, res){
+	connection.query("select users.id, admins.name, users.email," 
+			+ " users.streetnumber, users.streetname, users.city, users.phonenumber " 
+			+ "from users inner join admins where" 
+			+ " users.id = admins.userid && users.id = 4" , function(err, result){
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			obj = {print: result};
+			res.render('admin/viewprofile', obj);
+		}
+	});
+});
+
+// Update Admin
+router.get('/accounts/admin/save', function(req, res){
+	res.render('admin/viewprofile');
+});
+
+router.post('/accounts/admin/save',
+	function(req, res) {
+		connection.query("update users set phonenumber = ? , streetnumber = ? , streetname = ? , city = ? " 
+						+ "where users.id = 4", [req.body.phonenumber, req.body.streetnumber,
+							req.body.streetname, req.body.city], function(err, rows){
+			if (err)
+				throw err;
+			else {
+				req.flash('success_msg', 'Successfully updated.');
+				res.redirect('/admin/accounts/admin');
+				//res.redirect('/admin/accounts/customer');
+			}
+		});
+	}
+);
 
 module.exports = router;

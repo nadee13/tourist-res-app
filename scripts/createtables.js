@@ -13,9 +13,9 @@ let connection = mysql.createConnection({
 
 connection.connect(function(err) {
     if (err) {
-      return console.error('error: ' + err.message);
+      return //console.error('error: ' + err.message);
     }
-    console.log('Connected to the MySQL server.');
+    //console.log('Connected to the MySQL server.');
 
     var createUser = `create table if not exists users(
       id int primary key auto_increment,
@@ -54,8 +54,7 @@ connection.connect(function(err) {
 
     var createAdmin = `create table if not exists admins(
       id int primary key auto_increment,
-      firstname varchar(255) not null,
-      lastname varchar(255) not null,
+      name varchar(255) not null,
       userid INT NOT null,
       foreign key (userid)
         references users (id)
@@ -64,37 +63,37 @@ connection.connect(function(err) {
 
   connection.query(createUser, function(err, result) {
     if (err) {
-      console.log(err.message);
+      //console.log(err.message);
     }
-    console.log("User table created");
+    //console.log("User table created");
   });
 
   connection.query(createCustomer, function(err, result) {
     if (err) {
-      console.log(err.message);
+      //console.log(err.message);
     }
-    console.log("Customer table created");
+    //console.log("Customer table created");
   });
 
   connection.query(createAgency, function(err, result) {
     if (err) {
-      console.log(err.message);
+      //console.log(err.message);
     }
-    console.log("Agency table created");
+    //console.log("Agency table created");
   });
 
   connection.query(createAdmin, function(err, result) {
     if (err) {
-      console.log(err.message);
+      //console.log(err.message);
     }
-    console.log("Admin table created");
+    //console.log("Admin table created");
   });
 });
 
   // connection.end(function(err) {
   //   if (err) {
-  //     return console.log('error:' + err.message);
+  //     return //console.log('error:' + err.message);
   //   }
-  //   console.log('Close the database connection.');
+  //   //console.log('Close the database connection.');
   // });
 

@@ -38,12 +38,13 @@ passport.use('local-customer', new LocalStrategy({
 		passReqToCallback: true
 	},
 	function(req, email, password, done) {
-		console.log(email);
 		connection.query("SELECT * FROM users WHERE email = ?",[email], function(err, rows){
-			if (err)
+			if (err){
 				return done(err);
+			}
 			if (rows.length) {
-				return done(null, false, {message: 'Email already exists'}); // req.flash is the way to set flashdata using connect-flash
+				req.flash('error_msg', 'Email already exists!');
+				return done(null, false, {message: ''}); // req.flash is the way to set flashdata using connect-flash
 			}else{
                 var email = req.body.email;
                 var password = req.body.password;
@@ -69,14 +70,12 @@ passport.use('local-customer', new LocalStrategy({
                 };
 
                 var insertUserQuery = "INSERT INTO users ( email, password, streetnumber, streetname, city, phonenumber, role ) values (?,?,?,?,?,?,?)";
-                    console.log(insertUserQuery);
                     connection.query(insertUserQuery,[newUserMysql.email, newUserMysql.password, newUserMysql.streetnumber, newUserMysql.streetname,
                         newUserMysql.city, newUserMysql.phonenumber, newUserMysql.role],function(err, rows) {
                         newUserMysql.id = rows.insertId;
                     });
 
                     connection.query("SELECT id FROM users WHERE email = ?",[email], function(err, rows){
-                        console.log('rows[0].id' + rows);
                         userid = rows[0].id;
                         
                         var newCustomerMysql = {
@@ -87,7 +86,6 @@ passport.use('local-customer', new LocalStrategy({
                             userid: userid
                         };
                         var insertCustomerQuery = "INSERT INTO customers ( firstname, lastname, gender, dateofbirth, userid) values (?,?,?,?,?)";
-                        console.log(insertCustomerQuery);
                         connection.query(insertCustomerQuery, [newCustomerMysql.firstname, newCustomerMysql.lastname, newCustomerMysql.gender, newCustomerMysql.dateofbirth, newCustomerMysql.userid],function(err, rows) {
                         });
                     });
@@ -129,20 +127,23 @@ passport.use('local-login-customer', new LocalStrategy({
 		passReqToCallback: true
 	},
 	function(req, email, password, done) {
-		connection.query("SELECT * FROM users WHERE email = ?",[email], function(err, rows){
+		connection.query("SELECT * FROM users inner join customers on users.id = customers.userid where users.email = ?",[email], function(err, rows){
 			if (err)
 				return done(err);
 			if (!rows.length) {
-				return done(null, false, {message: 'Invalid email'}); // req.flash is the way to set flashdata using connect-flash
+				req.flash('error_msg', 'Invalid email!');
+				return done(null, false, {message: ''}); // req.flash is the way to set flashdata using connect-flash
 			}
 
 			// if the user is found but the password is wrong
 			if (!bcrypt.compareSync(password, rows[0].password))
-				return done(null, false, {message: 'Invalid password'}); // create the loginMessage and save it to session as flashdata
+				req.flash('error_msg', 'Invalid password!');
+				return done(null, false, {message: ''}); // create the loginMessage and save it to session as flashdata
 
 			// if the user is found but the password is wrong
 			if (!rows[0].active)
-				return done(null, false, {message: 'User not yet confirmed'});
+				req.flash('error_msg', 'User not yet confirmed!');
+				return done(null, false, {message: ''});
 
 			// all is well, return successful user
 			return done(null, rows[0]);
@@ -153,8 +154,7 @@ passport.use('local-login-customer', new LocalStrategy({
 router.post('/login',
 	passport.authenticate('local-login-customer', {successRedirect:'/customer/home', failureRedirect:'/customer/login', badRequestMessage:'Please enter email and password' , failureFlash: true}),
 	function(req, res) {
-		console.log(req);
-	res.redirect('/customer/home');
+	//res.redirect('/customer/home');
 });
 
 //Logout

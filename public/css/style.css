@@ -13,6 +13,18 @@ h2{
   margin-bottom: 40px;
 }
 
+.status{
+  margin-top: 7%;
+}
+
+.modal-success{
+  background-color: rgb(214, 247, 214);
+}
+
+.modal-error{
+  background-color: rgb(252, 165, 160);
+}
+
 nav{
   padding-left: 10% !important;
   padding-right: 10% !important;

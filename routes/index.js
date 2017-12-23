@@ -79,7 +79,7 @@ router.get('/logout', function(req, res){
 // router.post('/login',
 // 	passport.authenticate('local', {successRedirect:'/', failureRedirect:'/login', badRequestMessage:'Please enter email and password' , failureFlash: true}),
 // 	function(req, res) {
-// 		console.log(req);
+// 		//console.log(req);
 // 	res.redirect('/');
 // });
 
