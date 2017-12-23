@@ -41,10 +41,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // required for passport
 app.use(session({
-	secret: 'vidyapathaisalwaysrunning',
+	secret: 'nadeeixproud2bme',
 	resave: true,
   saveUninitialized: true,
-      cookie: { maxAge: 6000000000 }
+      cookie: { maxAge: 60000000 }
  } )); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions

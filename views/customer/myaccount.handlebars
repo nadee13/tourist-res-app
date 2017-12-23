@@ -1,7 +1,7 @@
-{{> adminheader}}
+{{> customerheader}}
 
 <div class="container-fluid detailscon">
-  <h2 class="page-header">Admin Details</h2>
+  <h2 class="page-header">My Account</h2>
   {{#print}}
   <div class="row">
     <div class="col">
@@ -10,12 +10,16 @@
           <input readonly type="email" value="{{email}}" class="form-control" placeholder="Email" name="email" required>
         </div>
         <div class="form-group">
-          <label>Name</label>
-          <input readonly type="text" value="{{name}}" class="form-control" placeholder="Name" name="name" required>
+          <label>First Name</label>
+          <input readonly type="text" value="{{firstname}}" class="form-control" placeholder="Name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input readonly type="text" value="{{lastname}}" class="form-control" placeholder="Name" name="name" required>
         </div>
     </div>
     <div class="col">
-      <form method="post" action="/admin/accounts/admin/save">
+      <form method="post" action="/customer/myaccount/save">
         {{!-- <button type="submit" class="btn btn-success">Save Changes</button>
         </form> --}}
         <div class="form-group">

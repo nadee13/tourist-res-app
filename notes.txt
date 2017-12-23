@@ -1,0 +1,2 @@
+#try deleting and reinstalling node_modules - invalid email - enter password and email
+#email verification

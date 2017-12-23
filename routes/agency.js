@@ -44,7 +44,8 @@ passport.use('local-agency', new LocalStrategy({
 			if (err)
 				return done(err);
 			if (rows.length) {
-				return done(null, false, {message: 'Email already exists'}); // req.flash is the way to set flashdata using connect-flash
+				req.flash('error_msg', 'Email already exists!');
+				return done(null, false, {message: ''}); // req.flash is the way to set flashdata using connect-flash
 			}else{
                 var email = req.body.email;
                 var password = req.body.password;
@@ -127,37 +128,79 @@ passport.use('local-login-agency', new LocalStrategy({
 			if (err)
 				return done(err);
 			if (!rows.length) {
-				return done(null, false, {message: 'Invalid email'}); // req.flash is the way to set flashdata using connect-flash
+				//req.flash('error_msg', 'Invalid email!');
+				return done(null, false, {message: ''}); // req.flash is the way to set flashdata using connect-flash
 			}
 
 			// if the user is found but the password is wrong
 			if (!bcrypt.compareSync(password, rows[0].password))
-				return done(null, false, {message: 'Invalid password'}); // create the loginMessage and save it to session as flashdata
+				//req.flash('error_msg', 'Invalid password!');
+				return done(null, false, {message: ''}); // create the loginMessage and save it to session as flashdata
 
 			// if the user is found but the password is wrong
 			if (!rows[0].active)
-				return done(null, false, {message: 'User not yet confirmed'});
+				//req.flash('error_msg', 'User not yet confirmed!');
+				return done(null, false, {message: ''});
 
 			// all is well, return successful user
+			req.session.user = rows[0].email;
 			return done(null, rows[0]);
 		});
 	}
 ));
 
 router.post('/login',
-	passport.authenticate('local-login-agency', {successRedirect:'/agency/home', failureRedirect:'/agency/login', badRequestMessage:'Please enter email and password' , failureFlash: true}),
-	function(req, res) {
-		//console.log(req);
-	res.redirect('/agency/home');
-});
+	passport.authenticate('local-login-agency', {
+		successRedirect:'/agency/home', 
+		failureRedirect:'/agency/login', 
+		badRequestMessage:'Please enter email and password' , 
+		failureFlash: true
+}));
 
 //Logout
 router.get('/logout', function(req, res){
 	req.logout();
 
 	req.flash('success_msg', 'You are logged out');
-
+	req.session.destroy();
 	res.redirect('/agency/login');
 });
+
+//View Agency
+router.get('/myaccount/', ensureAuthenticated, function(req, res){
+	connection.query("select users.id, agencies.name, users.email," 
+			+ " users.streetnumber, users.streetname, users.city, users.phonenumber " 
+			+ "from users inner join agencies on" 
+			+ " users.id = agencies.userid where users.email = ?", [req.session.user] , function(err, result){
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			obj = {print: result};
+			res.render('agency/myaccount', obj);
+		}
+	});
+});
+
+// Update Agency
+router.get('/myaccount/save', function(req, res){
+	res.render('agency/myaccount');
+});
+
+router.post('/myaccount/save',
+	function(req, res) {
+		connection.query("update users set phonenumber = ? , streetnumber = ? , streetname = ? , city = ? " 
+						+ "where users.email = ?", [req.body.phonenumber, req.body.streetnumber,
+							req.body.streetname, req.body.city, req.session.user], function(err, rows){
+			if (err)
+				throw err;
+			else {
+				req.flash('success_msg', 'Successfully updated.');
+				res.redirect('/agency/myaccount');
+				//res.redirect('/admin/accounts/customer');
+			}
+		});
+	}
+);
 
 module.exports = router;

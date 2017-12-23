@@ -4,7 +4,6 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
-
 var connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
@@ -22,7 +21,7 @@ function ensureAuthenticated(req, res, next){
 	if(req.isAuthenticated()){
 		return next();
 	} else {
-		req.flash('error_msg','You are not logged in');
+		req.flash('error_msg','You are not logged in');// //
 		res.redirect('/customer/login');
 	}
 }
@@ -43,7 +42,7 @@ passport.use('local-customer', new LocalStrategy({
 				return done(err);
 			}
 			if (rows.length) {
-				req.flash('error_msg', 'Email already exists!');
+				req.flash('error_msg', 'Email already exists!'); // //
 				return done(null, false, {message: ''}); // req.flash is the way to set flashdata using connect-flash
 			}else{
                 var email = req.body.email;
@@ -90,7 +89,7 @@ passport.use('local-customer', new LocalStrategy({
                         });
                     });
 
-                req.flash('success_msg', 'Please verify your email and await confirmation.');
+                req.flash('success_msg', 'Please verify your email and await confirmation.'); // //
             }
 			return done(null, rows[0]);
 		});
@@ -113,7 +112,7 @@ router.get('/login', function(req, res){
 
 passport.serializeUser(function(user, done) {
 	done(null, user.id);
-	});
+});
 
 passport.deserializeUser(function(id, done) {
 	connection.query("SELECT * FROM users WHERE id = " + id, function(err, rows){
@@ -127,43 +126,83 @@ passport.use('local-login-customer', new LocalStrategy({
 		passReqToCallback: true
 	},
 	function(req, email, password, done) {
-		connection.query("SELECT * FROM users inner join customers on users.id = customers.userid where users.email = ?",[email], function(err, rows){
+		connection.query("SELECT * FROM users where email = ? && role = 'customer'",[email], function(err, rows){
 			if (err)
 				return done(err);
-			if (!rows.length) {
-				req.flash('error_msg', 'Invalid email!');
-				return done(null, false, {message: ''}); // req.flash is the way to set flashdata using connect-flash
-			}
+			if (rows[0]==null) 
+				//req.flash('error_msg', 'Invalid email!'); //
+				return done(null, false,  req.flash('Invalid email!')); // req.flash is the way to set flashdata using connect-flash
+			
 
 			// if the user is found but the password is wrong
 			if (!bcrypt.compareSync(password, rows[0].password))
-				req.flash('error_msg', 'Invalid password!');
-				return done(null, false, {message: ''}); // create the loginMessage and save it to session as flashdata
+				//req.flash('error_msg', 'Invalid password!'); //
+				return done(null, false, req.flash('error_msg', 'Invalid password!')); // create the loginMessage and save it to session as flashdata
 
-			// if the user is found but the password is wrong
-			if (!rows[0].active)
-				req.flash('error_msg', 'User not yet confirmed!');
-				return done(null, false, {message: ''});
-
+			// if the user is found but not confirmed
+			if (!rows[0].active){
+				//req.flash('error_msg', 'User not yet confirmed!');
+				return done(null, false, req.flash('error_msg', 'User not yet confirmed!'));
+			}
 			// all is well, return successful user
+			req.session.user = rows[0].email;
 			return done(null, rows[0]);
 		});
 	}
 ));
 
 router.post('/login',
-	passport.authenticate('local-login-customer', {successRedirect:'/customer/home', failureRedirect:'/customer/login', badRequestMessage:'Please enter email and password' , failureFlash: true}),
-	function(req, res) {
-	//res.redirect('/customer/home');
-});
+	passport.authenticate('local-login-customer', {
+		successRedirect:'/customer/home', 
+		failureRedirect:'/customer/login', 
+		badRequestMessage:'Please enter email and password' , 
+		failureFlash: true
+	}));
 
 //Logout
 router.get('/logout', function(req, res){
 	req.logout();
 
 	req.flash('success_msg', 'You are logged out');
-
+	req.session.destroy();
 	res.redirect('/customer/login');
 });
+
+//View Customer
+router.get('/myaccount/', ensureAuthenticated, function(req, res){
+	connection.query("select users.id, customers.firstname, customers.lastname, users.email," 
+			+ " users.streetnumber, users.streetname, users.city, users.phonenumber " 
+			+ "from users inner join customers on" 
+			+ " users.id = customers.userid where users.email = ?", [req.session.user] , function(err, result){
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			obj = {print: result};
+			res.render('customer/myaccount', obj);
+		}
+	});
+});
+
+// Update Customer
+router.get('/myaccount/save', function(req, res){
+	res.render('customer/myaccount');
+});
+
+router.post('/myaccount/save',
+	function(req, res) {
+		connection.query("update users set phonenumber = ? , streetnumber = ? , streetname = ? , city = ? " 
+						+ "where users.email = ?", [req.body.phonenumber, req.body.streetnumber,
+							req.body.streetname, req.body.city, req.session.user], function(err, rows){
+			if (err)
+				throw err;
+			else {
+				req.flash('success_msg', 'Successfully updated.');
+				res.redirect('/customer/myaccount');
+				//res.redirect('/admin/accounts/customer');
+			}
+		});
+	}
+);
 
 module.exports = router;

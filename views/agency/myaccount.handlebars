@@ -1,0 +1,53 @@
+{{> agencyheader}}
+
+<div class="container-fluid detailscon">
+  <h2 class="page-header">Agency Account</h2>
+  {{#print}}
+  <div class="row">
+    <div class="col">
+        <div class="form-group">
+          <label>Email</label>
+          <input readonly type="email" value="{{email}}" class="form-control" placeholder="Email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label>First Name</label>
+          <input readonly type="text" value="{{firstname}}" class="form-control" placeholder="Name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input readonly type="text" value="{{lastname}}" class="form-control" placeholder="Name" name="name" required>
+        </div>
+    </div>
+    <div class="col">
+      <form method="post" action="/agency/myaccount/save">
+        {{!-- <button type="submit" class="btn btn-success">Save Changes</button>
+        </form> --}}
+        <div class="form-group">
+          <label>Street Number</label>
+          <input type="text" value="{{streetnumber}}" class="form-control" placeholder="Street Number" name="streetnumber" required>
+        </div>
+        <div class="form-group">
+          <label>Street Name</label>
+          <input type="text" value="{{streetname}}" class="form-control" placeholder="Street Name" name="streetname" required>
+        </div>
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" value="{{city}}" class="form-control" placeholder="City" name="city" required>
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="text" value="{{phonenumber}}" class="form-control" placeholder="XXXXXXXXXX" name="phonenumber" maxlength="10" required>
+        </div>
+        <div class="row">
+            <div class="col-9"></div>
+            <div class="col">
+            <button type="submit" class="btn btn-success">Save Changes</button>
+            </div>
+      </div> 
+      </form>
+    </div>
+  </div>  
+   
+  {{/print}}
+</div>
+

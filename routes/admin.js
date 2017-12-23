@@ -43,7 +43,8 @@ passport.use('local-admin', new LocalStrategy({
 			if (err)
 				return done(err);
 			if (rows.length) {
-				return done(null, false, {message: 'Email already exists'}); // req.flash is the way to set flashdata using connect-flash
+				req.flash('error_msg', 'Email already exists!');
+				return done(null, false, {message: ''}); // req.flash is the way to set flashdata using connect-flash
 			}else{
                 var email = req.body.email;
 				var password = req.body.password;
@@ -106,7 +107,7 @@ router.get('/login', function(req, res){
 
 passport.serializeUser(function(user, done) {
 	done(null, user.id);
-	});
+});
 
 passport.deserializeUser(function(id, done) {
 	connection.query("SELECT * FROM users WHERE id = " + id, function(err, rows){
@@ -125,15 +126,18 @@ passport.use('local-login-admin', new LocalStrategy({
 			if (err)
 				return done(err);
 			if (!rows.length) {
-				return done(null, false, {message: 'Invalid email'}); // req.flash is the way to set flashdata using connect-flash
+				//req.flash('error_msg', 'Invalid email!');
+				return done(null, false, {message: '0'}); // req.flash is the way to set flashdata using connect-flash
 			}
 			// if the user is found but the password is wrong
 			if (!bcrypt.compareSync(password, rows[0].password))
-				return done(null, false, {message: 'Invalid password'}); // create the loginMessage and save it to session as flashdata
+				//req.flash('error_msg', 'Invalid password!');
+				return done(null, false, {message: '1'}); // create the loginMessage and save it to session as flashdata
 
 			// if the user is found but the password is wrong
 			if (!rows[0].active)
-				return done(null, false, {message: 'User not yet confirmed'});
+			//req.flash('error_msg', 'User not yet confirmed!');
+				return done(null, false, {message: '2'});
 
 			// all is well, return successful user
 			return done(null, rows[0]);
@@ -145,11 +149,10 @@ router.post('/login',
 	passport.authenticate('local-login-admin', {
 		successRedirect:'/admin/home', 
 		failureRedirect:'/admin/login', 
-		badRequestMessage:'Please enter email and password' , 
-		failureFlash: true}),
-	function(req, res) {
-		res.redirect('/admin/home');
-});
+		badRequestMessage:'' , 
+		failureFlash: true
+	})
+);
 
 //Logout
 router.get('/logout', function(req, res){
@@ -160,7 +163,7 @@ router.get('/logout', function(req, res){
 	res.redirect('/admin/login');
 });
 
-
+//Customer Account
 router.get('/accounts/customer', ensureAuthenticated, function(req, res){
 	connection.query("select customers.firstname, customers.lastname, users.email, users.active, " +  
 	                 "users.verification, users.id from users inner join customers on users.id = customers.userid where users.role = 'customer';", function(err, result){
@@ -177,8 +180,8 @@ router.get('/accounts/customer', ensureAuthenticated, function(req, res){
 router.get('/accounts/customer/:userid', ensureAuthenticated, function(req, res){
 	connection.query("select users.id, customers.firstname, customers.lastname, users.email," 
 			+ " users.streetnumber, users.streetname, users.city, users.phonenumber, customers.gender, "
-			+ "customers.dateofbirth, users.active, users.verification from users inner join customers where" 
-			+ " users.id = customers.userid && users.id = " + req.params.userid , function(err, result){
+			+ "customers.dateofbirth, users.active, users.verification from users inner join customers on" 
+			+ " users.id = customers.userid where users.id = " + req.params.userid , function(err, result){
 		if(err){
 			throw err;
 		} else {
@@ -219,7 +222,7 @@ router.get('/accounts/customer/:userid/delete', function(req, res){
 });
 
 //View Admin
-router.get('/accounts/admin', ensureAuthenticated, function(req, res){
+router.get('/myaccount', ensureAuthenticated, function(req, res){
 	connection.query("select users.id, admins.name, users.email," 
 			+ " users.streetnumber, users.streetname, users.city, users.phonenumber " 
 			+ "from users inner join admins where" 
@@ -229,17 +232,17 @@ router.get('/accounts/admin', ensureAuthenticated, function(req, res){
 		} else {
 			var obj = {};
 			obj = {print: result};
-			res.render('admin/viewprofile', obj);
+			res.render('admin/myaccount', obj);
 		}
 	});
 });
 
 // Update Admin
-router.get('/accounts/admin/save', function(req, res){
-	res.render('admin/viewprofile');
+router.get('/myaccount/save', function(req, res){
+	res.render('admin/myaccount');
 });
 
-router.post('/accounts/admin/save',
+router.post('/myaccount/save',
 	function(req, res) {
 		connection.query("update users set phonenumber = ? , streetnumber = ? , streetname = ? , city = ? " 
 						+ "where users.id = 4", [req.body.phonenumber, req.body.streetnumber,
@@ -254,5 +257,63 @@ router.post('/accounts/admin/save',
 		});
 	}
 );
+
+//Agency Account
+router.get('/accounts/agency', ensureAuthenticated, function(req, res){
+	connection.query("select agencies.name, users.email, users.active, " +  
+	                 "users.verification, users.id from users inner join agencies on users.id = agencies.userid where users.role = 'agency';", function(err, result){
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			obj = {print: result};
+			res.render('admin/agencyaccounts', obj);
+		}
+	});
+});
+
+router.get('/accounts/agency/:userid', ensureAuthenticated, function(req, res){
+	connection.query("select users.id, agencies.name, users.email," 
+			+ " users.streetnumber, users.streetname, users.city, users.phonenumber, "
+			+ "users.active, users.verification from users inner join agencies on" 
+			+ " users.id = agencies.userid where users.id = " + req.params.userid , function(err, result){
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			obj = {print: result};
+			res.render('admin/viewagency', obj);
+		}
+	});
+});
+
+// Update Customer
+router.get('/accounts/agency/:userid/save', function(req, res){
+	res.render('admin/viewagency');
+});
+
+router.post('/accounts/agency/:userid/save',
+	function(req, res) {
+		connection.query("update users set active = " + req.body.active + " where id = " + req.params.userid , function(err, rows){
+			if (err)
+				return done(err);
+			else {
+				req.flash('success_msg', 'Successfully updated.');
+				res.redirect('/admin/accounts/agency/' + req.params.userid);
+			}
+		});
+	}
+);
+
+router.get('/accounts/agency/:userid/delete', function(req, res){
+	connection.query("delete from users where id = " + req.params.userid , function(err, rows){
+		if (err)
+			return done(err);
+		else {
+			req.flash('success_msg', 'Successfully deleted.');
+			res.redirect('/admin/accounts/agency');
+		}
+	});
+});
 
 module.exports = router;

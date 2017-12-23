@@ -39,6 +39,21 @@
     {{/if}}
 
     <div class="container">
+      {{!-- <div class="row">
+        <div class="col-lg-12">
+          {{#if success_msg}}
+            <div class="alert alert-success">{{success_msg}}</div>
+          {{/if}}
+
+          {{#if error_msg}}
+            <div class="alert alert-danger">{{error_msg}}</div>
+          {{/if}}
+
+          {{#if error}}
+            <div class="alert alert-danger">{{error}}</div>
+          {{/if}}
+        </div>
+      </div> --}}
       <div id="myModal" class="modal"  tabindex="-1" role="dialog">
           <div class="modal-dialog" role="document">
               <div class="modal-content">
@@ -53,14 +68,14 @@
                 {{#if error}}
                   <div class="modal-body modal-error text-center">{{error}}</div>
                 {{/if}}
-            </div>
+          </div>
         </div> 
       </div> 
     </div> <!-- /container -->
     {{{body}}}
-      <footer class="footer">
-        <p >&copy; 2017 TouristResApp, Inc.</p>
-      </footer>
+    <footer class="footer">
+      <p >&copy; 2017 TouristResApp, Inc.</p>
+    </footer>
 
     {{!-- </div> <!-- /container --> --}}
     <script type="text/javascript" src="/js/jquery-3.2.1.js"></script>

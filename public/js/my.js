@@ -2,11 +2,11 @@ $(document).ready(function(){
     var modaltext = $('.modal-body').text();
     var alerttext = $('.alert').text();
 
-    console.log('modaltext: ' + modaltext);
+    console.log('alerttext: ' + alerttext);
 
     function showmodal (){
         if (modaltext){
-            $('#myModal').show(0).delay(5000).hide(0);
+            $('#myModal').show(0).delay(2000).hide(0);
         }
     }
 
