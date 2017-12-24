@@ -4,11 +4,29 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
+var nodemailer = require('nodemailer');
+var random = require("random-js")();
 var connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
     password : 'admin'
   });
+
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+  var transporter = nodemailer.createTransport({
+	host: "smtp-mail.outlook.com", // hostname
+	secureConnection: false, // TLS requires secureConnection to be false
+	port: 587, // port for secure SMTP
+	tls: {
+	   ciphers:'SSLv3'
+	},
+	auth: {
+		user: 'touristreservationsystem@outlook.com',
+		pass: 'trs12345'
+	}
+});
+
+// setup e-mail data, even with unicode symbols
 
 connection.query('USE touristappdatabase');
 
@@ -56,6 +74,7 @@ passport.use('local-customer', new LocalStrategy({
                 var phonenumber = req.body.phonenumber;
 				var dateofbirth = req.body.dateofbirth;
 				var role;
+				var code;
                 var userid;
                 
                 var newUserMysql = {
@@ -75,7 +94,8 @@ passport.use('local-customer', new LocalStrategy({
                     });
 
                     connection.query("SELECT id FROM users WHERE email = ?",[email], function(err, rows){
-                        userid = rows[0].id;
+						userid = rows[0].id;
+						code = random.integer(9999999, 99999999);
                         
                         var newCustomerMysql = {
                             firstname: firstname,
@@ -83,12 +103,35 @@ passport.use('local-customer', new LocalStrategy({
                             gender: gender,
                             dateofbirth: dateofbirth,
                             userid: userid
-                        };
+						};
+
                         var insertCustomerQuery = "INSERT INTO customers ( firstname, lastname, gender, dateofbirth, userid) values (?,?,?,?,?)";
                         connection.query(insertCustomerQuery, [newCustomerMysql.firstname, newCustomerMysql.lastname, newCustomerMysql.gender, newCustomerMysql.dateofbirth, newCustomerMysql.userid],function(err, rows) {
-                        });
-                    });
+						});
+						
+						connection.query("update users set code = " + code + " where id = " + userid ,function(err, rows) {
+						});
+					
+													
+						// setup e-mail data, even with unicode symbols
+						var mailOptions = {
+							from: '"TouristResApp " <touristreservationsystem@outlook.com>', // sender address (who sends)
+							to: '' + email + '', // list of receivers (who receives)
+							subject: 'RouristResApp - Email Verification ', // Subject line
+							text: 'Hi ' + firstname + '! Please verify your email by clicking on the following link:  http://localhost:8080/customer/verifyemail/' + code, // plaintext body
+							html: 'Hi ' + firstname + '! <br><br> Please verify your email by clicking on the following link: http://localhost:8080/customer/verifyemail/' + code // html body
+						};
 
+						// send mail with defined transport object
+						transporter.sendMail(mailOptions, function(error, info){
+							if(error){
+								return(error);
+								//return console.log(error);
+							}
+							//console.log('Message sent: ' + info.response);
+						});
+
+					});
                 req.flash('success_msg', 'Please verify your email and await confirmation.'); // //
             }
 			return done(null, rows[0]);
@@ -104,6 +147,22 @@ router.post('/register',
         failureFlash: true
     })
 );
+
+//Verify email
+router.get('/verifyemail/:code' , function(req, res){
+	var code = req.params.code;
+	connection.query("SELECT * FROM users where code = ? ", [code], function(err, rows){
+		if (err){
+			return (err);
+		}else {
+			connection.query("update users set verification = 1 where id = " + rows[0].id ,function(err, rows) {
+				req.flash('success_msg', 'Email verified!'); // req.flash is the way to set flashdata using connect-flash
+				res.redirect('/customer/login');
+			});
+		}
+	});
+});
+
 
 //Login
 router.get('/login', function(req, res){

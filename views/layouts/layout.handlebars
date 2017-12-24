@@ -57,13 +57,13 @@
       <div id="myModal" class="modal"  tabindex="-1" role="dialog">
           <div class="modal-dialog" role="document">
               <div class="modal-content">
+                {{#if error_msg}}
+                  <div class="modal-body modal-error text-center">{{error_msg}}</div>
+                {{else}}
                 {{#if success_msg}}
                   <div class="modal-body modal-success text-center">{{success_msg}}</div>
                 {{/if}}
-
-                {{#if error_msg}}
-                  <div class="modal-body modal-error text-center">{{error_msg}}</div>
-                {{/if}}
+                {{/if}}                
 
                 {{#if error}}
                   <div class="modal-body modal-error text-center">{{error}}</div>

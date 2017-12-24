@@ -4,12 +4,27 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
-
+var nodemailer = require('nodemailer');
+var random = require("random-js")();
 var connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
     password : 'admin'
   });
+
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+  var transporter = nodemailer.createTransport({
+	host: "smtp-mail.outlook.com", // hostname
+	secureConnection: false, // TLS requires secureConnection to be false
+	port: 587, // port for secure SMTP
+	tls: {
+	   ciphers:'SSLv3'
+	},
+	auth: {
+		user: 'touristreservationsystem@outlook.com',
+		pass: 'trs12345'
+	}
+});
 
 connection.query('USE touristappdatabase');
 
@@ -32,7 +47,7 @@ router.get('/register', function(req, res){
 	res.render('agency/register');
 });
 
-// Login
+// Register
 passport.use('local-agency', new LocalStrategy({
 		usernameField: 'email',
 		passwordField: 'password',
@@ -55,6 +70,7 @@ passport.use('local-agency', new LocalStrategy({
                 var city = req.body.city;
 				var phonenumber = req.body.phonenumber;
 				var role;
+				var code;
                 var userid;
                 
                 var newUserMysql = {
@@ -76,6 +92,7 @@ passport.use('local-agency', new LocalStrategy({
 
                     connection.query("SELECT id FROM users WHERE email = ?",[email], function(err, rows){
                         userid = rows[0].id;
+						code = random.integer(9999999, 99999999);
                         
                         var newAgencyMysql = {
                             name: name,
@@ -84,7 +101,28 @@ passport.use('local-agency', new LocalStrategy({
                         var insertAgencyQuery = "INSERT INTO agencies ( name, userid) values (?,?)";
                         //console.log(insertAgencyQuery);
                         connection.query(insertAgencyQuery, [newAgencyMysql.name, newAgencyMysql.userid],function(err, rows) {
-                        });
+						});
+						
+						connection.query("update users set code = " + code + " where id = " + userid ,function(err, rows) {
+						});
+
+						// setup e-mail data, even with unicode symbols
+						var mailOptions = {
+							from: '"TouristResApp " <touristreservationsystem@outlook.com>', // sender address (who sends)
+							to: '' + email + '', // list of receivers (who receives)
+							subject: 'RouristResApp - Email Verification ', // Subject line
+							text: 'Hi ' + name + '! Please verify your email by clicking on the following link:  http://localhost:8080/agency/verifyemail/' + code, // plaintext body
+							html: 'Hi ' + name + '! <br><br> Please verify your email by clicking on the following link: http://localhost:8080/agency/verifyemail/' + code // html body
+						};
+
+						// send mail with defined transport object
+						transporter.sendMail(mailOptions, function(error, info){
+							if(error){
+								return(error);
+								//return console.log(error);
+							}
+							//console.log('Message sent: ' + info.response);
+						});
                     });
 
                 req.flash('success_msg', 'Please verify your email and await confirmation.');
@@ -102,6 +140,21 @@ router.post('/register',
         failureFlash: true
     })
 );
+
+//Verify email
+router.get('/verifyemail/:code' , function(req, res){
+	var code = req.params.code;
+	connection.query("SELECT * FROM users where code = ? ", [code], function(err, rows){
+		if (err){
+			return (err);
+		}else {
+			connection.query("update users set verification = 1 where id = " + rows[0].id ,function(err, rows) {
+				req.flash('success_msg', 'Email verified!'); // req.flash is the way to set flashdata using connect-flash
+				res.redirect('/agency/login');
+			});
+		}
+	});
+});
 
 //Login
 router.get('/login', function(req, res){
