@@ -251,7 +251,7 @@ router.post('/myaccount/save',
 				throw err;
 			else {
 				req.flash('success_msg', 'Successfully updated.');
-				res.redirect('/admin/accounts/admin');
+				res.redirect('/admin//myaccount');
 				//res.redirect('/admin/accounts/customer');
 			}
 		});
