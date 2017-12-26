@@ -256,4 +256,96 @@ router.post('/myaccount/save',
 	}
 );
 
+//Buses
+router.get('/bus', ensureAuthenticated, function(req, res){
+	connection.query("select agencies.id from agencies inner join users on agencies.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+		var agencyid = result[0].id;
+		if(err){
+			throw err;
+		} else {
+			connection.query("select buses.id, buses.name, buses.registrationnumber , buses.category, buses.numberofseats, " +  
+							"buses.availability from buses where buses.agencyid = " + agencyid, function (err, result){
+				if(err){
+					throw err;
+				} else {
+					var obj = {};
+					obj = {print: result};
+					res.render('agency/viewbuses', obj);
+				}
+			});
+		}
+	});
+});
+
+router.get('/bus/add', ensureAuthenticated, function(req, res) {
+	res.render('agency/addbus');
+});
+
+router.post('/bus/add', ensureAuthenticated, function(req, res) {
+		connection.query("select agencies.id from agencies inner join users on agencies.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+			var agencyid = result[0].id;
+			if(err){
+				throw err;
+			} else{
+				var name = req.body.name;
+				var registrationnumber = req.body.registrationnumber;
+				var category = req.body.category;
+				var numberofseats = req.body.numberofseats;
+				var availability = req.body.availability;
+				var insertBusQuery = "insert into buses (name, registrationnumber, category, numberofseats, availability, agencyid) values (?,?,?,?,?,?)";
+				connection.query(insertBusQuery, [name, registrationnumber, category, numberofseats, availability, agencyid], function(err, rows){
+					insertBusQuery.id = rows.insertId;
+					if (err)
+						throw err;
+					else {
+						req.flash('success_msg', 'Successfully added.');
+						res.redirect('/buses/' + insertBusQuery.id);
+					}
+				});
+			}
+		});
+	}
+);
+
+router.get('/bus/:busid', ensureAuthenticated, function(req, res){
+	connection.query("select id, name, registrationnumber, category, numberofseats, "
+					+ "availability from buses where id = " + req.params.busid, function (err, result){
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			obj = {print: result};
+			//console.log('obj: ' + JSON.stringify(obj));
+			res.render('agency/editbus', obj);
+		}
+	});
+});
+
+router.get('/bus/:busid/save', ensureAuthenticated, function(req, res){
+	res.render('agency/editbus');
+});
+
+router.post('/bus/:busid/save', ensureAuthenticated, function(req, res){
+	connection.query("update buses set availability = ? where id = ?", 
+		[req.body.availability, req.params.busid], function (err, result){
+		if(err){
+			throw err;
+		} else {
+			req.flash('success_msg', 'Successfully updated.');
+			res.redirect('/agency/bus/' + req.params.busid);
+		}
+	});
+});
+
+router.get('/bus/:busid/delete', ensureAuthenticated, function(req, res){
+	connection.query("delete from buses where id = " + req.params.busid , function(err, rows){
+		if (err)
+			throw err;
+		else {
+			req.flash('success_msg', 'Successfully deleted.');
+			res.redirect('/agency/bus');
+		}
+	});
+});
+
 module.exports = router;

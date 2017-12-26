@@ -61,7 +61,21 @@ connection.connect(function(err) {
         on delete cascade
     )`;
 
-  connection.query(createUser, function(err, result) {
+    var createBus = `create table if not exists buses(
+      id int primary key auto_increment,
+      name varchar(255) not null,
+      registrationnumber varchar(255) not null,
+      category varchar(255) not null,
+      numberofseats int not null,
+      availability tinyint(1) default '0',
+      agencyid INT NOT null,
+      foreign key (agencyid)
+        references agencies (id)
+        on delete cascade
+    )`;
+
+
+    connection.query(createUser, function(err, result) {
     if (err) {
       //console.log(err.message);
     }
@@ -87,6 +101,13 @@ connection.connect(function(err) {
       //console.log(err.message);
     }
     //console.log("Admin table created");
+  });
+
+  connection.query(createBus, function(err, result) {
+    if (err) {
+      console.log(err.message);
+    }
+    console.log("Bus table created");
   });
 });
 

@@ -201,7 +201,7 @@ router.post('/accounts/customer/:userid/save',
 	function(req, res) {
 		connection.query("update users set active = " + req.body.active + " where id = " + req.params.userid , function(err, rows){
 			if (err)
-				return done(err);
+				throw err;
 			else {
 				req.flash('success_msg', 'Successfully updated.');
 				res.redirect('/admin/accounts/customer/' + req.params.userid);
@@ -305,10 +305,10 @@ router.post('/accounts/agency/:userid/save',
 	}
 );
 
-router.get('/accounts/agency/:userid/delete', function(req, res){
+router.get('/accounts/agency/:userid/delete', ensureAuthenticated, function(req, res){
 	connection.query("delete from users where id = " + req.params.userid , function(err, rows){
 		if (err)
-			return done(err);
+			throw err;
 		else {
 			req.flash('success_msg', 'Successfully deleted.');
 			res.redirect('/admin/accounts/agency');

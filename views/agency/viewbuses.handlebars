@@ -1,0 +1,31 @@
+{{> agencyheader}}
+
+<div class="container-fluid detailscon">
+    <h2 class="page-header">Buses</h2>
+    <div><a class="btn btn-primary" href="/agency/buses/add" role="button">Add New</a></div>
+</div>
+<div class="topgap">
+<table id="example" class="table accountstable table-striped table-bordered" cellspacing="0" width="100%">
+    <t>
+        <tr>
+            <th>Name</th>
+            <th>Registration Number</th>
+            <th>Category</th>
+            <th>Number of seats</th>
+            <th>Availability</th>
+        </tr>
+    </thead>
+    <tfoot>
+        {{#print}}
+        <tr>
+            <td>{{name}}</td>
+            <td>{{registrationnumber}}</td>
+            <td>{{category}}</td>
+            <td>{{numberofseats}}</td>
+            <td>{{availability}}</td>
+            <td><a class="btn btn-success" href="/agency/bus/{{id}}" role="button">Edit</a></td>
+        </tr>
+        {{/print}}
+    </tfoot>
+</table>
+</div>
