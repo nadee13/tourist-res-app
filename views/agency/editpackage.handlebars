@@ -1,0 +1,53 @@
+{{> agencyheader}}
+
+<div class="container-fluid detailscon">
+  <h2 class="page-header">Bus Details</h2>
+  <div class="row">
+    {{#print}}
+    <div class="col">
+        <div class="form-group">
+          <label>Name</label>
+          <input readonly type="text" value="{{name}}" class="form-control" placeholder="Name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label>Registration Number</label>
+          <input readonly  type="test" value="{{registrationnumber}}" class="form-control" placeholder="Registration Number" name="registrationnumber" required>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <input readonly type="text" value="{{category}}" class="form-control" placeholder="Category" name="category" required>
+        </div>
+    </div>
+    <div class="col">
+      <form method="post" action="/agency/bus/{{id}}/save">
+      <div class="row">
+        <div class="col">
+          <button type="submit" class="btn btn-success">Save Changes</button>
+        </div>
+        <div class="col">
+           <a class="btn btn-danger" href="/agency/bus/{{id}}/delete" role="button">Delete Bus</a>
+        </div>
+      </div>
+      <div class="form-group status">
+          <label>Status</label>
+          <select class="form-control" name="availability" required>
+            {{#if availability}}
+              <option value="1">Available</option>
+              <option value="0">Not Available</option>
+            {{else}}
+              <option value="0">Not Available</option>
+              <option value="1">Available</option>
+            {{/if}}
+        </select>
+        </div>    
+        <div class="form-group">
+          <label>Number of Seats</label>
+          <input readonly type="text" value="{{numberofseats}}" class="form-control" placeholder="Number of Seats" name="numberofseats" required>
+        </div>
+        </form>
+    </div>
+    {{/print}}
+  </div>  
+   
+</div>
+

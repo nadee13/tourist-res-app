@@ -9,6 +9,7 @@ var exphbs = require('express-handlebars');
 var expressValidator = require('express-validator');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var multer = require('multer');
 //var morgan = require('morgan');
 var passport = require('passport');
 var flash    = require('connect-flash');
@@ -35,7 +36,7 @@ app.use(bodyParser.urlencoded({ //!!!different
 	extended: true
 }));
 app.use(cookieParser());
-app.use(bodyParser(path.join(__dirname, 'public')));
+//app.use(multer({dest:'./public/uploads/'}).single('file'));
 
 // Set Static Folder
 app.use(bodyParser(path.join(__dirname, 'public')));

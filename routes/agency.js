@@ -6,19 +6,24 @@ var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
 var nodemailer = require('nodemailer');
 var random = require("random-js")();
+var multer = require('multer');
+var path = require('path');
+var mime = require('mime');
+//var upload = multer({ dest: 'uploads/' });
 var connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
     password : 'admin'
-  });
+});
+connection.query('USE touristappdatabase');
 
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-  var transporter = nodemailer.createTransport({
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+var transporter = nodemailer.createTransport({
 	host: "smtp-mail.outlook.com", // hostname
 	secureConnection: false, // TLS requires secureConnection to be false
 	port: 587, // port for secure SMTP
 	tls: {
-	   ciphers:'SSLv3'
+		ciphers:'SSLv3'
 	},
 	auth: {
 		user: 'touristreservationsystem@outlook.com',
@@ -26,7 +31,16 @@ var connection = mysql.createConnection({
 	}
 });
 
-connection.query('USE touristappdatabase');
+var storage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		cb(null, 'uploads');
+	},
+	filename: (req, file, cb) => {
+		cb(null, Date.now() + '.' + mime.getExtension(file.mimetype));
+	}
+});
+
+var upload = multer({ storage: storage });
 
 //Profile
 router.get('/home', ensureAuthenticated, function(req, res){
@@ -389,7 +403,7 @@ router.get('/package/add', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.post('/package/add', ensureAuthenticated, function(req, res) {
+router.post('/package/add', upload.single('image'), ensureAuthenticated, function(req, res) {
 		connection.query("select agencies.id from agencies inner join users on agencies.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
 			var agencyid = result[0].id;
 			if(err){
@@ -400,21 +414,21 @@ router.post('/package/add', ensureAuthenticated, function(req, res) {
 				var tourlength = req.body.tourlength;
 				var departurelocation = req.body.departurelocation;
 				var departuretime = req.body.departuretime;
-				var image = req.body.image;
+				var image = req.file.filename;
 				var costadult = req.body.costadult;
 				var costchild = req.body.costchild;
 				var busname = req.body.busname;
 				var getBusQuery = "select buses.id from buses where buses.name = ?";
 				connection.query(getBusQuery, [busname], function(err, result){
 					var busid = result[0].id;
-					var insertPackageQuery = "insert into packages (name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, busid, agencyid) values (?,?,?,?,?,?,?,?,?)";
+					var insertPackageQuery = "insert into packages (name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, busid, agencyid) values (?,?,?,?,?,?,?,?,?,?)";
 					connection.query(insertPackageQuery, [name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, busid, agencyid], function(err, rows){
-						insertPackageQuery.id = rows.insertId;
 						if (err)
 							throw err;
 						else {
+							insertPackageQuery.id = rows.insertId;
 							req.flash('success_msg', 'Successfully added.');
-							res.redirect('/package/' + insertPackageQuery.id);
+							res.redirect('/package');
 						}
 					});
 				});
