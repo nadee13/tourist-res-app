@@ -1,4 +1,5 @@
   //\connect mysql://root@localhost:3306
+  //\use touristappdatabase
 const express = require('express');
 const app = express();
 	
@@ -74,6 +75,21 @@ connection.connect(function(err) {
         on delete cascade
     )`;
 
+    var createPackage = `create table if not exists packages(
+      id int primary key auto_increment,
+      name varchar(255) not null,
+      description varchar(255) not null,
+      tourlength varchar(255) not null,
+      departurelocation varchar(255) not null,
+      departuretime varchar(255) not null,
+      image blob,
+      costadult decimal(19, 4),
+      costchild decimal(19, 4),
+      agencyid INT NOT null,
+      foreign key (agencyid)
+        references agencies (id)
+        on delete cascade
+    )`;
 
     connection.query(createUser, function(err, result) {
     if (err) {
@@ -105,9 +121,16 @@ connection.connect(function(err) {
 
   connection.query(createBus, function(err, result) {
     if (err) {
+      //console.log(err.message);
+    }
+    //console.log("Bus table created");
+  });
+
+  connection.query(createPackage, function(err, result) {
+    if (err) {
       console.log(err.message);
     }
-    console.log("Bus table created");
+    console.log("Package table created");
   });
 });
 

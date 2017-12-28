@@ -299,7 +299,7 @@ router.post('/bus/add', ensureAuthenticated, function(req, res) {
 						throw err;
 					else {
 						req.flash('success_msg', 'Successfully added.');
-						res.redirect('/buses/' + insertBusQuery.id);
+						res.redirect('/bus/' + insertBusQuery.id);
 					}
 				});
 			}
@@ -344,6 +344,131 @@ router.get('/bus/:busid/delete', ensureAuthenticated, function(req, res){
 		else {
 			req.flash('success_msg', 'Successfully deleted.');
 			res.redirect('/agency/bus');
+		}
+	});
+});
+
+//Packages
+router.get('/package', ensureAuthenticated, function(req, res){
+	connection.query("select agencies.id from agencies inner join users on agencies.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+		var agencyid = result[0].id;
+		if(err){
+			throw err;
+		} else {
+			connection.query("select packages.id, packages.name, packages.description , packages.tourlength, packages.tourlength, " 
+							+ "packages.departurelocation, packages.departuretime, packages.image, packages.costadult, packages.costchild" 
+							+ " from packages where packages.agencyid = " + agencyid, function (err, result){
+				if(err){
+					throw err;
+				} else {
+					var obj = {};
+					obj = {print: result};
+					res.render('agency/viewpackages', obj);
+				}
+			});
+		}
+	});
+});
+
+router.get('/package/add', ensureAuthenticated, function(req, res) {
+	connection.query("select agencies.id from agencies inner join users on agencies.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+		var agencyid = result[0].id;
+		if(err){
+			throw err;
+		} else {
+			connection.query("select buses.name from buses where buses.agencyid = " + agencyid, function (err, result){
+				if(err){
+					throw err;
+				} else {
+					var obj = {};
+					obj = {print: result};
+					res.render('agency/addpackage', obj);
+				}
+			});
+		}
+	});
+});
+
+router.post('/package/add', ensureAuthenticated, function(req, res) {
+		connection.query("select agencies.id from agencies inner join users on agencies.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+			var agencyid = result[0].id;
+			if(err){
+				throw err;
+			} else{
+				var name = req.body.name;
+				var description = req.body.description;
+				var tourlength = req.body.tourlength;
+				var departurelocation = req.body.departurelocation;
+				var departuretime = req.body.departuretime;
+				var image = req.body.image;
+				var costadult = req.body.costadult;
+				var costchild = req.body.costchild;
+				var busname = req.body.busname;
+				var getBusQuery = "select buses.id from buses where buses.name = ?";
+				connection.query(getBusQuery, [busname], function(err, result){
+					var busid = result[0].id;
+					var insertPackageQuery = "insert into packages (name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, busid, agencyid) values (?,?,?,?,?,?,?,?,?)";
+					connection.query(insertPackageQuery, [name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, busid, agencyid], function(err, rows){
+						insertPackageQuery.id = rows.insertId;
+						if (err)
+							throw err;
+						else {
+							req.flash('success_msg', 'Successfully added.');
+							res.redirect('/package/' + insertPackageQuery.id);
+						}
+					});
+				});
+			}
+		});
+	}
+);
+
+router.get('/package/:packageid', ensureAuthenticated, function(req, res){
+	connection.query("select id, name, description, tourlength, departurelocation, departuretime, image, costadult, costchild "
+					+ " from packages where id = " + req.params.packageid, function (err, result){
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			obj = {print: result};
+			//console.log('obj: ' + JSON.stringify(obj));
+			res.render('agency/editpackage', obj);
+		}
+	});
+});
+
+router.get('/package/:packageid/save', ensureAuthenticated, function(req, res){
+	res.render('agency/editpackage');
+});
+
+router.post('/package/:packageid/save', ensureAuthenticated, function(req, res){var name = req.body.name;
+	var description = req.body.description;
+	var tourlength = req.body.tourlength;
+	var departurelocation = req.body.departurelocation;
+	var departuretime = req.body.departuretime;
+	var image = req.body.image;
+	var costadult = req.body.costadult;
+	var costchild = req.body.costchild;
+	connection.query("update package set name = ?, description = ?, tourlength = ?, departurelocation = ?," 
+					+ " departuretime = ?, image = ?, costadult = ?, costchild = ?  where id = ?", 
+					[req.body.name, req.body.description, req.body.tourlength, req.body.departurelocation, req.body.departuretime, 
+						req.body.image, req.body.costadult, req.body.costchild, req.params.packageid], function (err, result){
+		if(err){	
+			throw err;
+		} else {
+			req.flash('success_msg', 'Successfully updated.');
+			res.redirect('/agency/package/' + req.params.packageid);
+		}
+	});
+});
+
+router.get('/package/:packageid/delete', ensureAuthenticated, function(req, res){
+	connection.query("delete from packages where id = " + req.params.packageid , function(err, rows){
+		if (err)
+			throw err;
+		else {
+			req.flash('success_msg', 'Successfully deleted.');
+			res.redirect('/agency/package');
 		}
 	});
 });

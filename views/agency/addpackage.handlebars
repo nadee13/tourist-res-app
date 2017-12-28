@@ -1,0 +1,54 @@
+{{> agencyheader}}
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <h2 class="page-header">Add Package</h2>
+        <form method="post" action="/agency/package/add">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control" placeholder="Name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea type="text" class="form-control" placeholder="Description" name="description" rows="5" required></textarea>
+          </div>
+          <div class="form-group">
+            <label>Tour Length (Hours)</label>
+            <input type="text" class="form-control" placeholder="Tour Length" name="tourlength" required>
+          </div>
+          <div class="form-group">
+            <label>Departure Location</label>
+            <input type="text" class="form-control" placeholder="Departure Location" name="departurelocation" required>
+          </div>
+          <div class="form-group">
+            <label>Bus Name</label>
+            <select class="form-control" name="busname" required>
+              <option value=""></option>
+                {{#print}}
+                <option value="{{name}}">{{name}}</option>
+                {{/print}}
+            </select>
+          </div> 
+          <div class="form-group">
+            <label>Departure Time</label>
+            <input type="text" class="form-control" placeholder="Departure Time" name="departuretime" required>
+          </div>
+          <div class="form-group">
+            <label>Image</label>
+            <input type="file" class="form-control-file" name="image" accept="image/*" required>
+          </div>
+          <div class="form-group">
+            <label>Cost ($) - Adult</label>
+            <input type="text" class="form-control" placeholder="Cost ($) - Adult" name="costadult" required>
+          </div>
+          <div class="form-group">
+            <label>Cost ($) - Child</label>
+            <input type="text" class="form-control" placeholder="Cost ($) - Child" name="costchild" required>
+          </div>
+          <button type="submit" class="btn btn-success">Save</button>
+        </form>
+      </div>  
+  </div>
+</div>
+

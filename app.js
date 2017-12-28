@@ -35,9 +35,10 @@ app.use(bodyParser.urlencoded({ //!!!different
 	extended: true
 }));
 app.use(cookieParser());
+app.use(bodyParser(path.join(__dirname, 'public')));
 
 // Set Static Folder
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser(path.join(__dirname, 'public')));
 
 // required for passport
 app.use(session({
