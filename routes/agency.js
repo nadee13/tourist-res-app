@@ -441,15 +441,24 @@ router.post('/package/add', upload.single('image'), ensureAuthenticated, functio
 );
 
 router.get('/package/:packageid', ensureAuthenticated, function(req, res){
-	connection.query("select id, name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, packagedate "
-					+ " from packages where id = " + req.params.packageid, function (err, result){
+	connection.query("select packages.*, buses.name as busname from packages inner join buses on packages.busid = buses.id"
+					+ " where packages.id = " + req.params.packageid, function (err, result){
+						console.log('result: ' + JSON.stringify(result));
+						var agencyid = result[0].agencyid;
 		if(err){
 			throw err;
 		} else {
 			var obj = {};
-			obj = {print: result};
 			//console.log('obj: ' + JSON.stringify(obj));
+			connection.query("select buses.name as selectbusname from buses where buses.agencyid = " + agencyid, function (err1, result1){
+				if(err1){
+					throw err1;
+				} else {
+					obj = {print: result, print1: result1};
+					console.log('obj: ' + JSON.stringify(obj));
 			res.render('agency/editpackage', obj);
+				}
+			});
 		}
 	});
 });
@@ -458,23 +467,45 @@ router.get('/package/:packageid/save', ensureAuthenticated, function(req, res){
 	res.render('agency/editpackage');
 });
 
-router.post('/package/:packageid/save', ensureAuthenticated, function(req, res){var name = req.body.name;
+router.post('/package/:packageid/save',  upload.single('image'), ensureAuthenticated, function(req, res){
+	console.log('req.file: ' + JSON.stringify(req.file));
+	var packageid = req.params.packageid;
+	var name = req.body.name;
 	var description = req.body.description;
 	var tourlength = req.body.tourlength;
 	var departurelocation = req.body.departurelocation;
 	var departuretime = req.body.departuretime;
-	var image = req.body.image;
+	var image = null; if (req.file != null) image = req.file.filename;
 	var costadult = req.body.costadult;
 	var costchild = req.body.costchild;
-	connection.query("update package set name = ?, description = ?, tourlength = ?, departurelocation = ?," 
-					+ " departuretime = ?, image = ?, costadult = ?, costchild = ?  where id = ?", 
-					[req.body.name, req.body.description, req.body.tourlength, req.body.departurelocation, req.body.departuretime, 
-						req.body.image, req.body.costadult, req.body.costchild, req.params.packageid], function (err, result){
-		if(err){	
-			throw err;
+	var packagedate = req.body.packagedate;
+	var busname = req.body.busname;
+	var getBusQuery = "select buses.id from buses where buses.name = ?";
+	connection.query(getBusQuery, [busname], function(err, result){
+		var busid = result[0].id;
+		var updateQuery;
+		if (image == null) {
+			connection.query("update packages set name = ?, description = ?, tourlength = ?, departurelocation = ?," 
+					+ " departuretime = ?, costadult = ?, costchild = ?, packagedate = ?, busid = ? where id = ?", 
+					[name, description, tourlength, departurelocation, departuretime, costadult, costchild, packagedate, busid, packageid], function (err, result){
+				if(err){	
+					throw err;
+				} else {
+					req.flash('success_msg', 'Successfully added.');
+					res.redirect('/agency/package/' + req.params.packageid);
+				}
+			});
 		} else {
-			req.flash('success_msg', 'Successfully updated.');
-			res.redirect('/agency/package/' + req.params.packageid);
+			connection.query("update packages set name = ?, description = ?, tourlength = ?, departurelocation = ?," 
+					+ " departuretime = ?, image = ?, costadult = ?, costchild = ?, packagedate = ?, busid = ? where id = ?", 
+					[name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, packagedate, busid, packageid], function (err, result){
+				if(err){	
+					throw err;
+				} else {
+					req.flash('success_msg', 'Successfully added.');
+					res.redirect('/agency/package/' + req.params.packageid);
+				}
+			});
 		}
 	});
 });
