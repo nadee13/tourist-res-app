@@ -17,6 +17,13 @@ $(document).ready(function(){
             changeYear: true,
             yearRange: '1900:2018'
         });
+
+        $("#packagedatepicker").datepicker({
+            dateFormat: 'yy-mm-dd',
+              changeMonth: true,
+              changeYear: false
+          });
+
         $('.accounttable').DataTable();
 
         showmodal();

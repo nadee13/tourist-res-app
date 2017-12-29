@@ -33,7 +33,7 @@ var transporter = nodemailer.createTransport({
 
 var storage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		cb(null, 'uploads');
+		cb(null, 'public/uploads');
 	},
 	filename: (req, file, cb) => {
 		cb(null, Date.now() + '.' + mime.getExtension(file.mimetype));
@@ -370,7 +370,7 @@ router.get('/package', ensureAuthenticated, function(req, res){
 			throw err;
 		} else {
 			connection.query("select packages.id, packages.name, packages.description , packages.tourlength, packages.tourlength, " 
-							+ "packages.departurelocation, packages.departuretime, packages.image, packages.costadult, packages.costchild" 
+							+ "packages.departurelocation, packages.departuretime, packages.image, packages.costadult, packages.costchild, packages.packagedate" 
 							+ " from packages where packages.agencyid = " + agencyid, function (err, result){
 				if(err){
 					throw err;
@@ -405,6 +405,8 @@ router.get('/package/add', ensureAuthenticated, function(req, res) {
 
 router.post('/package/add', upload.single('image'), ensureAuthenticated, function(req, res) {
 		connection.query("select agencies.id from agencies inner join users on agencies.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+			console.log('req.file.filename' + req.file.filename);
+			console.log('req.file' + req.file);
 			var agencyid = result[0].id;
 			if(err){
 				throw err;
@@ -417,12 +419,13 @@ router.post('/package/add', upload.single('image'), ensureAuthenticated, functio
 				var image = req.file.filename;
 				var costadult = req.body.costadult;
 				var costchild = req.body.costchild;
+				var packagedate = req.body.packagedate;
 				var busname = req.body.busname;
 				var getBusQuery = "select buses.id from buses where buses.name = ?";
 				connection.query(getBusQuery, [busname], function(err, result){
 					var busid = result[0].id;
-					var insertPackageQuery = "insert into packages (name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, busid, agencyid) values (?,?,?,?,?,?,?,?,?,?)";
-					connection.query(insertPackageQuery, [name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, busid, agencyid], function(err, rows){
+					var insertPackageQuery = "insert into packages (name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, packagedate, busid, agencyid) values (?,?,?,?,?,?,?,?,?,?,?)";
+					connection.query(insertPackageQuery, [name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, packagedate, busid, agencyid], function(err, rows){
 						if (err)
 							throw err;
 						else {
@@ -438,7 +441,7 @@ router.post('/package/add', upload.single('image'), ensureAuthenticated, functio
 );
 
 router.get('/package/:packageid', ensureAuthenticated, function(req, res){
-	connection.query("select id, name, description, tourlength, departurelocation, departuretime, image, costadult, costchild "
+	connection.query("select id, name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, packagedate "
 					+ " from packages where id = " + req.params.packageid, function (err, result){
 		if(err){
 			throw err;

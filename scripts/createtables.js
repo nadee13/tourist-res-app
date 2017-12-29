@@ -82,9 +82,11 @@ connection.connect(function(err) {
       tourlength varchar(255) not null,
       departurelocation varchar(255) not null,
       departuretime varchar(255) not null,
-      image blob,
-      costadult decimal(19, 4),
-      costchild decimal(19, 4),
+      image varchar(255) not null,
+      costadult decimal(19, 2),
+      costchild decimal(19, 2),
+      packagedate date,
+      busid int not null,
       agencyid INT NOT null,
       foreign key (agencyid)
         references agencies (id)
