@@ -1,0 +1,45 @@
+{{> customerheader}}
+
+<div class="container-fluid detailscon">
+  <h2 class="page-header">Package Details</h2>
+    {{#print}}
+    <div class="row">
+      <div class="col">
+          <img src="/uploads/{{image}}">
+      </div>
+      <div class="col">
+        <h4>{{name}}</h4>
+        <p>{{description}}</p>
+
+        <h6>Departure Location</h6>
+            <p>{{departurelocation}}</p>
+
+        <div id="custcostrow" class="row">
+          <div class="col">
+            <h6>Departure Time</h6>
+            <p>{{departuretime}}</p>
+          </div>
+          <div class="col">
+            <h6>Tour Date</h6>
+            <p>{{moment packagedate format="YYYY-MM-DD"}}</p>
+          </div>
+          <div class="col">
+            <h6>Tour Length</h6>
+            <p>{{tourlength}} hours</p>
+          </div>
+        </div>
+        <div id="custcostrow" class="row">
+          <div class="col-4">
+            <p><b>Adult: </b>$ {{costadult}}</p>
+          </div>
+          <div class="col-4">
+            <p><b>Child: </b>$ {{costchild}}</p>
+          </div>
+        </div>
+        <a class="btn btn-success" href="/customer/package/{{id}}/reserveseat" role="button">Select Package</a>
+          
+      </div>
+    </div>
+    {{/print}}
+</div>
+

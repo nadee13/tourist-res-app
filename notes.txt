@@ -1,2 +1,3 @@
 #try deleting and reinstalling node_modules - invalid email - enter password and email
 #email verification - change link from lacalhost when hosting ;)
+#detele images

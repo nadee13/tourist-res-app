@@ -264,4 +264,40 @@ router.post('/myaccount/save',
 	}
 );
 
+//Packages
+router.get('/package', ensureAuthenticated, function(req, res){
+	connection.query("select * from packages", function (err, result){
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			obj = {print: result};
+			res.render('customer/viewpackages', obj);
+		}
+	});
+});
+
+router.get('/package/:packageid', ensureAuthenticated, function(req, res){
+	connection.query("select packages.*, buses.name as busname from packages inner join buses on packages.busid = buses.id"
+					+ " where packages.id = " + req.params.packageid, function (err, result){
+						console.log('result: ' + JSON.stringify(result));
+						var agencyid = result[0].agencyid;
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			//console.log('obj: ' + JSON.stringify(obj));
+			connection.query("select agencies.name as agencyname from agencies where agencies.id = " + agencyid, function (err1, result1){
+				if(err1){
+					throw err1;
+				} else {
+					obj = {print: result, print1: result1};
+					console.log('obj: ' + JSON.stringify(obj));
+					res.render('customer/viewpackage', obj);
+				}
+			});
+		}
+	});
+});
+
 module.exports = router;
