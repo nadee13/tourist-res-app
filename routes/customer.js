@@ -292,10 +292,112 @@ router.get('/package/:packageid', ensureAuthenticated, function(req, res){
 					throw err1;
 				} else {
 					obj = {print: result, print1: result1};
-					console.log('obj: ' + JSON.stringify(obj));
+					//console.log('obj: ' + JSON.stringify(obj));
 					res.render('customer/viewpackage', obj);
 				}
 			});
+		}
+	});
+});
+
+router.get('/package/:packageid/reserveseat', ensureAuthenticated, function(req, res){
+	connection.query("select packages.id as packageid, packages.name as packagename from packages where packages.id = " + req.params.packageid, function (err, result){
+						console.log('result: ' + JSON.stringify(result));
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			//console.log('obj: ' + JSON.stringify(obj));
+			connection.query("select seats.* from seats inner join packages on seats.busid = packages.busid"
+			+ " where packages.id = " + req.params.packageid, function (err1, result1){
+				if(err1){
+					throw err1;
+				} else {
+					obj = {print: result, print1: result1};
+					//console.log('obj: ' + JSON.stringify(obj));
+					res.render('customer/reserveseat', obj);
+				}
+			});
+		}
+	});
+});
+
+router.post('/package/:packageid/reserveseat', ensureAuthenticated, function(req, res){
+	//console.log('req.body: ' + JSON.stringify(req.body));
+	var seatnumbers = req.body.seatnumber;
+	var selectedseats = seatnumbers.filter(seat => seat != "");
+	var customerid;
+	var seatid;
+	var busid
+	var packageid = req.params.packageid;
+	connection.query("select customers.id from customers inner join users on customers.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+		customerid = result[0].id;
+		if(err){
+			throw err;
+		}
+	});
+	connection.query("select busid from packages where packages.id = " + packageid , function (err1, result1){
+						//console.log('result: ' + JSON.stringify(result));
+		busid = result1[0].busid;
+		if(err1){
+			throw err1;
+		} else {
+			for (var i = 0; i < selectedseats.length; i++){
+				var seat = selectedseats[i];
+				connection.query("update seats set status = 1 where busid = ? && number = ?",  [busid, seat], function (err2, rows2){
+					console.log('seatid: ' + seatid);
+					console.log('rows2: ' + JSON.stringify(rows2));
+					if(err2){
+						throw err2;
+					}else{
+						connection.query("select seats.id as seatid from seats where seats.number = ? && seats.busid = ?", [seat, busid], function (err3, result3){
+							console.log('result3: ' + JSON.stringify(result3));
+							console.log('result3[0]: ' + JSON.stringify(result3[0]));
+							seatid = result3[0].seatid;
+							console.log('seatid: ' + seatid);
+							connection.query("insert into reservations (seatid, customerid, packageid, confirm) values (?,?,?,?)", [seatid, customerid, packageid, 0], function (err4, rows4){
+								if(err4){
+									throw err4;
+								}
+							});
+						});
+					}
+				});
+			}
+			//res.render('customer/reserveseat', obj);
+			res.redirect('/customer/reservation')
+		}
+	});
+});
+
+//Reservations
+router.get('/reservation', ensureAuthenticated, function(req, res){
+	var customerid;
+	connection.query("select customers.id as customerid from customers inner join users on customers.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+		customerid = result[0].id;
+		if(err){
+			throw err;
+		}
+	});
+	connection.query("select customers.id as customerid from customers inner join users on customers.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+		customerid = result[0].id;
+		if(err){
+			throw err;
+		}
+	});
+	connection.query("select customers.id as customerid from customers inner join users on customers.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+		customerid = result[0].id;
+		if(err){
+			throw err;
+		}
+	});
+	connection.query("select * from reservations where reservations.customerid = " + customerid, function (err, result){
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			obj = {print: result};
+			res.render('customer/viewpackages', obj);
 		}
 	});
 });

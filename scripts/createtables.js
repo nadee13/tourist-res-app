@@ -68,7 +68,7 @@ connection.connect(function(err) {
       registrationnumber varchar(255) not null,
       category varchar(255) not null,
       numberofseats int not null,
-      availability tinyint(1) default '0',
+      availability tinyint(1),
       agencyid INT NOT null,
       foreign key (agencyid)
         references agencies (id)
@@ -93,7 +93,66 @@ connection.connect(function(err) {
         on delete cascade
     )`;
 
-    connection.query(createUser, function(err, result) {
+    var createSeat = `create table if not exists seats(
+      id int primary key auto_increment,
+      number int not null,
+      status tinyint(1) default '0',
+      busid int not null,
+      foreign key (busid)
+      references buses (id)
+      on delete cascade
+    )`;
+
+    var createReservation = `create table if not exists reservations(
+      id int primary key auto_increment,
+      confirm tinyint not null,
+      seatid int not null,
+      customerid int not null,
+      packageid int not null,
+      foreign key (seatid)
+      references seats (id)
+      on delete cascade,
+      foreign key (customerid)
+      references customers (id)
+      on delete cascade,
+      foreign key (packageid)
+      references packages (id)
+      on delete cascade
+    )`;
+
+    var createProcedureGetCustomers = `CREATE PROCEDURE if not exists getallcustomers()
+        BEGIN
+        SELECT *  FROM customers;
+        END
+    `;
+
+    var createProcedureEnterSeats = `create procedure if not exists enterseats()
+        begin
+        declare a int default 1;
+        simple_loop: loop
+        insert into seats (number, status, busid) values (a, 0, busid);
+        set a = a + 1;
+        if a = (numberofseats + 1) then
+        leave simple_loop;
+        end if;
+        end loop simple_loop;
+        end
+    `;
+
+    var createProcedureSetSeatStatus = `create procedure if not exists setseatstatus()
+        begin
+        declare a int default 1;
+        simple_loop: loop
+        insert into seats (number, status, busid) values (a, 0, busid);
+        set a = a + 1;
+        if a = (numberofseats + 1) then
+        leave simple_loop;
+        end if;
+        end loop simple_loop;
+        end
+    `;
+
+  connection.query(createUser, function(err, result) {
     if (err) {
       //console.log(err.message);
     }
@@ -130,9 +189,30 @@ connection.connect(function(err) {
 
   connection.query(createPackage, function(err, result) {
     if (err) {
+     // console.log(err.message);
+    }
+   // console.log("Package table created");
+  });
+
+  connection.query(createSeat, function(err, result) {
+    if (err) {
       console.log(err.message);
     }
-    console.log("Package table created");
+    console.log("Seat table created");
+  });
+
+  connection.query(createReservation, function(err, result) {
+    if (err) {
+      console.log(err.message);
+    }
+    console.log("Reservation table created");
+  });
+
+  connection.query(createProcedureGetCustomers, function(err, result) {
+    if (err) {
+      console.log(err.message);
+    }
+    console.log("Get customers procedure created");
   });
 });
 

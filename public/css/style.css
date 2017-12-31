@@ -21,6 +21,11 @@ img {
   margin-bottom: -1%;
 }
 
+.seat{
+  height: 40px;
+  width: 40px;
+  margin: 5px;
+}
 
 body {
   padding-top: 20px;

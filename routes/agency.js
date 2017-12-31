@@ -306,14 +306,21 @@ router.post('/bus/add', ensureAuthenticated, function(req, res) {
 				var category = req.body.category;
 				var numberofseats = req.body.numberofseats;
 				var availability = req.body.availability;
+				var busid; 
 				var insertBusQuery = "insert into buses (name, registrationnumber, category, numberofseats, availability, agencyid) values (?,?,?,?,?,?)";
 				connection.query(insertBusQuery, [name, registrationnumber, category, numberofseats, availability, agencyid], function(err, rows){
-					insertBusQuery.id = rows.insertId;
+					//insertBusQuery.id = rows.insertId;
+					busid = rows.insertId;
 					if (err)
 						throw err;
 					else {
+						connection.query("call enterseats(?,?)", [numberofseats, busid],  function(err, rows){
+							if(err){
+								throw err;
+							}
+						});
 						req.flash('success_msg', 'Successfully added.');
-						res.redirect('/bus/' + insertBusQuery.id);
+						res.redirect('agency/bus/' + busid);
 					}
 				});
 			}
