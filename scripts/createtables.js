@@ -98,8 +98,12 @@ connection.connect(function(err) {
       number int not null,
       status tinyint(1) default '0',
       busid int not null,
+      packageid int not null,
       foreign key (busid)
       references buses (id)
+      on delete cascade,
+      foreign key (packageid)
+      references packages (id)
       on delete cascade
     )`;
 
@@ -120,30 +124,17 @@ connection.connect(function(err) {
       on delete cascade
     )`;
 
-    var createProcedureGetCustomers = `CREATE PROCEDURE if not exists getallcustomers()
+    var createProcedureGetCustomers = `CREATE PROCEDURE getallcustomers()
         BEGIN
         SELECT *  FROM customers;
         END
     `;
 
-    var createProcedureEnterSeats = `create procedure if not exists enterseats()
+    var createProcedureEnterSeats = `create procedure enterseats (in numberofseats int, in busid int, in packageid int)
         begin
         declare a int default 1;
         simple_loop: loop
-        insert into seats (number, status, busid) values (a, 0, busid);
-        set a = a + 1;
-        if a = (numberofseats + 1) then
-        leave simple_loop;
-        end if;
-        end loop simple_loop;
-        end
-    `;
-
-    var createProcedureSetSeatStatus = `create procedure if not exists setseatstatus()
-        begin
-        declare a int default 1;
-        simple_loop: loop
-        insert into seats (number, status, busid) values (a, 0, busid);
+        insert into seats (number, status, busid, packageid) values (a, 0, busid, packageid);
         set a = a + 1;
         if a = (numberofseats + 1) then
         leave simple_loop;
@@ -208,11 +199,12 @@ connection.connect(function(err) {
     console.log("Reservation table created");
   });
 
-  connection.query(createProcedureGetCustomers, function(err, result) {
+  connection.query(createProcedureEnterSeats, function(err, result) {
     if (err) {
       console.log(err.message);
+    }else{
+      console.log("Enter seats procedure created");
     }
-    console.log("Get customers procedure created");
   });
 });
 

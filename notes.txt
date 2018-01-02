@@ -2,3 +2,4 @@
 #email verification - change link from lacalhost when hosting ;)
 #detele images
 #bus not available on some days
+#stripe

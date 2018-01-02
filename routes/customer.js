@@ -266,7 +266,7 @@ router.post('/myaccount/save',
 
 //Packages
 router.get('/package', ensureAuthenticated, function(req, res){
-	connection.query("select * from packages", function (err, result){
+	connection.query("select * from packages where packagedate >= curdate()", function (err, result){
 		if(err){
 			throw err;
 		} else {
@@ -308,13 +308,12 @@ router.get('/package/:packageid/reserveseat', ensureAuthenticated, function(req,
 		} else {
 			var obj = {};
 			//console.log('obj: ' + JSON.stringify(obj));
-			connection.query("select seats.* from seats inner join packages on seats.busid = packages.busid"
-			+ " where packages.id = " + req.params.packageid, function (err1, result1){
+			connection.query("select seats.* from seats where packageid = " + req.params.packageid, function (err1, result1){
 				if(err1){
 					throw err1;
 				} else {
 					obj = {print: result, print1: result1};
-					//console.log('obj: ' + JSON.stringify(obj));
+					console.log('seatsobj: ' + JSON.stringify(obj));
 					res.render('customer/reserveseat', obj);
 				}
 			});
@@ -365,7 +364,8 @@ router.post('/package/:packageid/reserveseat', ensureAuthenticated, function(req
 				});
 			}
 			//res.render('customer/reserveseat', obj);
-			res.redirect('/customer/reservation')
+			req.flash('success_msg', 'Successfully reserved.');
+			res.redirect('/customer/home');
 		}
 	});
 });
@@ -374,30 +374,47 @@ router.post('/package/:packageid/reserveseat', ensureAuthenticated, function(req
 router.get('/reservation', ensureAuthenticated, function(req, res){
 	var customerid;
 	connection.query("select customers.id as customerid from customers inner join users on customers.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
-		customerid = result[0].id;
-		if(err){
-			throw err;
-		}
-	});
-	connection.query("select customers.id as customerid from customers inner join users on customers.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
-		customerid = result[0].id;
-		if(err){
-			throw err;
-		}
-	});
-	connection.query("select customers.id as customerid from customers inner join users on customers.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
-		customerid = result[0].id;
-		if(err){
-			throw err;
-		}
-	});
-	connection.query("select * from reservations where reservations.customerid = " + customerid, function (err, result){
+		customerid = result[0].customerid;
+		console.log('customerid: ' + customerid);
 		if(err){
 			throw err;
 		} else {
-			var obj = {};
-			obj = {print: result};
-			res.render('customer/viewpackages', obj);
+			connection.query("select reservations.id as reservationid, reservations.confirm, seats.number as seatnumber, packages.* from reservations " 
+							+ "inner join seats on seats.id = reservations.seatid "
+							+ "inner join packages on packages.id = reservations.packageid " 
+							+ "where packages.packagedate >= curdate() && reservations.customerid = " + customerid, function (err, result){
+				if(err){
+					throw err;
+				} else {
+					var obj = {};
+					obj = {print: result};
+					console.log('obj: ' + JSON.stringify(obj));
+					res.render('customer/viewreservations', obj);
+				}
+			});
+		}
+	});
+	
+});
+
+router.get('/reservation/:reservationid/cancel', ensureAuthenticated, function(req, res){
+	connection.query("delete from reservations where id = " + req.params.reservationid, function (err, result){
+		if (err)
+			throw err;
+		else {
+			req.flash('success_msg', 'Successfully cancelled.');
+			res.redirect('/customer/reservation');
+		}
+	});
+});
+
+router.get('/reservation/:reservationid/confirm', ensureAuthenticated, function(req, res){
+	connection.query("update reservations set confirm = 1 where reservations.id = " + req.params.reservationid, function (err, result){
+		if (err)
+			throw err;
+		else {
+			req.flash('success_msg', 'Successfully confirmed.');
+			res.redirect('/customer/reservation');
 		}
 	});
 });

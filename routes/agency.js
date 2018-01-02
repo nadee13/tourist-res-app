@@ -314,11 +314,6 @@ router.post('/bus/add', ensureAuthenticated, function(req, res) {
 					if (err)
 						throw err;
 					else {
-						connection.query("call enterseats(?,?)", [numberofseats, busid],  function(err, rows){
-							if(err){
-								throw err;
-							}
-						});
 						req.flash('success_msg', 'Successfully added.');
 						res.redirect('agency/bus/' + busid);
 					}
@@ -428,17 +423,28 @@ router.post('/package/add', upload.single('image'), ensureAuthenticated, functio
 				var costchild = req.body.costchild;
 				var packagedate = req.body.packagedate;
 				var busname = req.body.busname;
-				var getBusQuery = "select buses.id from buses where buses.name = ?";
+				var busid;
+				var numberofseats;
+				var packageid;
+				var getBusQuery = "select buses.id, buses.numberofseats from buses where buses.name = ?";
 				connection.query(getBusQuery, [busname], function(err, result){
-					var busid = result[0].id;
+					busid = result[0].id;
+					numberofseats = result[0].numberofseats;
 					var insertPackageQuery = "insert into packages (name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, packagedate, busid, agencyid) values (?,?,?,?,?,?,?,?,?,?,?)";
 					connection.query(insertPackageQuery, [name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, packagedate, busid, agencyid], function(err, rows){
 						if (err)
 							throw err;
 						else {
-							insertPackageQuery.id = rows.insertId;
+							console.log('packagerows' + JSON.stringify(rows));
+							//insertPackageQuery.id = rows.insertId;
+							packageid = rows.insertId;
+							connection.query("call enterseats(?,?,?)", [numberofseats, busid, packageid],  function(err, rows){
+								if(err){
+									throw err;
+								}
+							});
 							req.flash('success_msg', 'Successfully added.');
-							res.redirect('/package');
+							res.redirect('/agency/package');
 						}
 					});
 				});
