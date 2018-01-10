@@ -1,31 +1,51 @@
 {{> agencyheader}}
-
-<div class="container-fluid detailscon">
-    <h2 class="page-header">Buses</h2>
+<div class="container-fluid cont">
+<div class="container listrowcont">
+    <h2 class="headertext">Buses</h2>
     <div><a class="btn btn-primary" href="/agency/bus/add" role="button">Add New</a></div>
-</div>
-<div class="topgap">
-<table id="example" class="table accountstable table-striped table-bordered" cellspacing="0" width="100%">
-    <t>
-        <tr>
-            <th>Name</th>
-            <th>Registration Number</th>
-            <th>Category</th>
-            <th>Number of seats</th>
-            <th>Availability</th>
-        </tr>
-    </thead>
-    <tfoot>
+    
+    <div class="row listreservationdivHeader">
+            <div class="col-2 text-center">
+                <h6 class="listreservationtext">Name</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6 class="listreservationtext">Registration Number</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6>Category</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6>Number of seats</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6>Availability</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6>Edit Details</h6>
+            </div>
+    </div>
         {{#print}}
-        <tr>
-            <td>{{name}}</td>
-            <td>{{registrationnumber}}</td>
-            <td>{{category}}</td>
-            <td>{{numberofseats}}</td>
-            <td>{{availability}}</td>
-            <td><a class="btn btn-success" href="/agency/bus/{{id}}" role="button">Edit</a></td>
-        </tr>
-        {{/print}}
-    </tfoot>
-</table>
+    <div class="row listreservationdiv">
+            <div class="col-2 text-center">
+                <p class="listreservationtext">{{name}}</p>
+            </div>
+            <div class="col-2 text-center">
+                <p class="listreservationtext">{{registrationnumber}}</p>
+            </div>
+            <div class="col-2 text-center">
+                <p class="listreservationtext">{{category}}</p>
+            </div>
+            <div class="col-2 text-center">
+                <p class="listreservationtext">{{numberofseats}}</p>
+            </div>
+            <div class="col-2 text-center">
+                <p class="listreservationtext">{{availability}}</p>
+            </div>
+            <div class="col-2 text-center">
+                <a class="btn btn-success" href="/agency/bus/{{id}}" role="button">Edit</a>
+            </div>
+</div>
+
+            {{/print}}
+</div>
 </div>

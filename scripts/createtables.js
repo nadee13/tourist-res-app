@@ -83,9 +83,10 @@ connection.connect(function(err) {
       departurelocation varchar(255) not null,
       departuretime varchar(255) not null,
       image varchar(255) not null,
-      costadult decimal(19, 2),
-      costchild decimal(19, 2),
+      cost decimal(19, 2),
       packagedate date,
+      lon FLOAT( 10, 6 ) not null,
+      lat FLOAT( 10, 6 ) not null,
       busid int not null,
       agencyid INT NOT null,
       foreign key (agencyid)
@@ -110,6 +111,7 @@ connection.connect(function(err) {
     var createReservation = `create table if not exists reservations(
       id int primary key auto_increment,
       confirm tinyint not null,
+      ticketnumber varchar(100),
       seatid int not null,
       customerid int not null,
       packageid int not null,
@@ -119,6 +121,18 @@ connection.connect(function(err) {
       foreign key (customerid)
       references customers (id)
       on delete cascade,
+      foreign key (packageid)
+      references packages (id)
+      on delete cascade
+    )`;
+
+    var createMarkers = `create table if not exists markers(
+      id int primary key auto_increment,
+      name varchar(255) not null,
+      address varchar(255) not null,
+      lat FLOAT( 10, 6 ) not null,
+      lng FLOAT( 10, 6 ) not null,
+      packageid int not null,
       foreign key (packageid)
       references packages (id)
       on delete cascade
@@ -142,6 +156,8 @@ connection.connect(function(err) {
         end loop simple_loop;
         end
     `;
+
+    
 
   connection.query(createUser, function(err, result) {
     if (err) {
@@ -197,6 +213,13 @@ connection.connect(function(err) {
       console.log(err.message);
     }
     console.log("Reservation table created");
+  });
+
+  connection.query(createMarkers, function(err, result) {
+    if (err) {
+      console.log(err.message);
+    }
+    console.log("Marker table created");
   });
 
   connection.query(createProcedureEnterSeats, function(err, result) {

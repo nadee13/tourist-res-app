@@ -234,7 +234,7 @@ router.get('/logout', function(req, res){
 });
 
 //View Agency
-router.get('/myaccount/', ensureAuthenticated, function(req, res){
+router.get('/mydetails/', ensureAuthenticated, function(req, res){
 	connection.query("select users.id, agencies.name, users.email," 
 			+ " users.streetnumber, users.streetname, users.city, users.phonenumber " 
 			+ "from users inner join agencies on" 
@@ -244,17 +244,17 @@ router.get('/myaccount/', ensureAuthenticated, function(req, res){
 		} else {
 			var obj = {};
 			obj = {print: result};
-			res.render('agency/myaccount', obj);
+			res.render('agency/mydetails', obj);
 		}
 	});
 });
 
 // Update Agency
-router.get('/myaccount/save', function(req, res){
-	res.render('agency/myaccount');
+router.get('/mydetails/save', function(req, res){
+	res.render('agency/mydetails');
 });
 
-router.post('/myaccount/save',
+router.post('/mydetails/save',
 	function(req, res) {
 		connection.query("update users set phonenumber = ? , streetnumber = ? , streetname = ? , city = ? " 
 						+ "where users.email = ?", [req.body.phonenumber, req.body.streetnumber,
@@ -263,7 +263,7 @@ router.post('/myaccount/save',
 				throw err;
 			else {
 				req.flash('success_msg', 'Successfully updated.');
-				res.redirect('/agency/myaccount');
+				res.redirect('/agency/mydetails');
 				//res.redirect('/admin/accounts/customer');
 			}
 		});
@@ -315,7 +315,7 @@ router.post('/bus/add', ensureAuthenticated, function(req, res) {
 						throw err;
 					else {
 						req.flash('success_msg', 'Successfully added.');
-						res.redirect('agency/bus/' + busid);
+						res.redirect('/agency/bus/' + busid);
 					}
 				});
 			}
@@ -372,7 +372,7 @@ router.get('/package', ensureAuthenticated, function(req, res){
 			throw err;
 		} else {
 			connection.query("select packages.id, packages.name, packages.description , packages.tourlength, packages.tourlength, " 
-							+ "packages.departurelocation, packages.departuretime, packages.image, packages.costadult, packages.costchild, packages.packagedate" 
+							+ "packages.departurelocation, packages.departuretime, packages.image, packages.cost, packages.packagedate" 
 							+ " from packages where packages.agencyid = " + agencyid, function (err, result){
 				if(err){
 					throw err;
@@ -407,8 +407,7 @@ router.get('/package/add', ensureAuthenticated, function(req, res) {
 
 router.post('/package/add', upload.single('image'), ensureAuthenticated, function(req, res) {
 		connection.query("select agencies.id from agencies inner join users on agencies.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
-			console.log('req.file.filename' + req.file.filename);
-			console.log('req.file' + req.file);
+			console.log('add package req.body' + JSON.stringify(req.body));
 			var agencyid = result[0].id;
 			if(err){
 				throw err;
@@ -419,9 +418,10 @@ router.post('/package/add', upload.single('image'), ensureAuthenticated, functio
 				var departurelocation = req.body.departurelocation;
 				var departuretime = req.body.departuretime;
 				var image = req.file.filename;
-				var costadult = req.body.costadult;
-				var costchild = req.body.costchild;
+				var cost = req.body.cost;
 				var packagedate = req.body.packagedate;
+				var lat = req.body.lat;
+				var lon = req.body.lon;
 				var busname = req.body.busname;
 				var busid;
 				var numberofseats;
@@ -430,8 +430,8 @@ router.post('/package/add', upload.single('image'), ensureAuthenticated, functio
 				connection.query(getBusQuery, [busname], function(err, result){
 					busid = result[0].id;
 					numberofseats = result[0].numberofseats;
-					var insertPackageQuery = "insert into packages (name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, packagedate, busid, agencyid) values (?,?,?,?,?,?,?,?,?,?,?)";
-					connection.query(insertPackageQuery, [name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, packagedate, busid, agencyid], function(err, rows){
+					var insertPackageQuery = "insert into packages (name, description, tourlength, departurelocation, departuretime, image, cost, packagedate, lon, lat, busid, agencyid) values (?,?,?,?,?,?,?,?,?,?,?,?)";
+					connection.query(insertPackageQuery, [name, description, tourlength, departurelocation, departuretime, image, cost, packagedate, lon, lat, busid, agencyid], function(err, rows){
 						if (err)
 							throw err;
 						else {
@@ -481,7 +481,7 @@ router.get('/package/:packageid/save', ensureAuthenticated, function(req, res){
 });
 
 router.post('/package/:packageid/save',  upload.single('image'), ensureAuthenticated, function(req, res){
-	console.log('req.file: ' + JSON.stringify(req.file));
+	console.log('saved package req.file: ' + JSON.stringify(req.file));
 	var packageid = req.params.packageid;
 	var name = req.body.name;
 	var description = req.body.description;
@@ -489,8 +489,7 @@ router.post('/package/:packageid/save',  upload.single('image'), ensureAuthentic
 	var departurelocation = req.body.departurelocation;
 	var departuretime = req.body.departuretime;
 	var image = null; if (req.file != null) image = req.file.filename;
-	var costadult = req.body.costadult;
-	var costchild = req.body.costchild;
+	var cost = req.body.cost;
 	var packagedate = req.body.packagedate;
 	var busname = req.body.busname;
 	var getBusQuery = "select buses.id from buses where buses.name = ?";
@@ -499,8 +498,8 @@ router.post('/package/:packageid/save',  upload.single('image'), ensureAuthentic
 		var updateQuery;
 		if (image == null) {
 			connection.query("update packages set name = ?, description = ?, tourlength = ?, departurelocation = ?," 
-					+ " departuretime = ?, costadult = ?, costchild = ?, packagedate = ?, busid = ? where id = ?", 
-					[name, description, tourlength, departurelocation, departuretime, costadult, costchild, packagedate, busid, packageid], function (err, result){
+					+ " departuretime = ?, cost = ?, packagedate = ?, busid = ? where id = ?", 
+					[name, description, tourlength, departurelocation, departuretime, cost, packagedate, busid, packageid], function (err, result){
 				if(err){	
 					throw err;
 				} else {
@@ -510,8 +509,8 @@ router.post('/package/:packageid/save',  upload.single('image'), ensureAuthentic
 			});
 		} else {
 			connection.query("update packages set name = ?, description = ?, tourlength = ?, departurelocation = ?," 
-					+ " departuretime = ?, image = ?, costadult = ?, costchild = ?, packagedate = ?, busid = ? where id = ?", 
-					[name, description, tourlength, departurelocation, departuretime, image, costadult, costchild, packagedate, busid, packageid], function (err, result){
+					+ " departuretime = ?, image = ?, cost = ?, packagedate = ?, busid = ? where id = ?", 
+					[name, description, tourlength, departurelocation, departuretime, image, cost, packagedate, busid, packageid], function (err, result){
 				if(err){	
 					throw err;
 				} else {

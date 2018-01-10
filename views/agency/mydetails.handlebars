@@ -1,7 +1,10 @@
-{{> customerheader}}
+{{> agencyheader}}
 
-<div class="container-fluid detailscon">
-  <h2 class="page-header">My Account</h2>
+<div class="container-fluid cont">
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12 addpackForm">
+  <h2 class="addpackheadertext">My Details</h2>
   {{#print}}
   <div class="row">
     <div class="col">
@@ -19,7 +22,7 @@
         </div>
     </div>
     <div class="col">
-      <form method="post" action="/customer/myaccount/save">
+      <form method="post" action="/agency/mydetails/save">
         {{!-- <button type="submit" class="btn btn-success">Save Changes</button>
         </form> --}}
         <div class="form-group">
@@ -49,5 +52,9 @@
   </div>  
    
   {{/print}}
+</div>
+  </div>  
+   
+</div>
 </div>
 

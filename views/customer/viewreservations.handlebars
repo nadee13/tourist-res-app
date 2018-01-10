@@ -1,42 +1,58 @@
 {{> customerheader}}
 
-<div class="container-fluid detailscon">
-    <h2 class="page-header">Reservations</h2>
-</div>
-<div class="topgap">
-<table id="example" class="table accountstable table-striped table-bordered" cellspacing="0" width="100%">
-    <t>
-        <tr>
-            <th>Package</th>
-            <th>Tour Length</th>
-            <th>Departure Location</th>
-            <th>Date</th>
-            <th>Departure Time</th>
-            <th>Cost - Adult</th>
-            <th>Cost - Child</th>
-            <th>Seat number</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tfoot>
+<div class="container-fluid cont">
+<div class="container">
+    <h2 class="headertext">Reservations</h2>
+    <div class="row listreservationdivHeader">
+            <div class="col-2 text-center">
+                <h6 class="listreservationtext">Package</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6 class="listreservationtext">Departure Time</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6>Cost ($)</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6>Seat Number</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6>Ticket Number</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6>Cancel</h6>
+            </div>
+    </div>
         {{#print}}
-        <tr>
-            <td>{{name}}</td>
-            <td>{{tourlength}}</td>
-            <td>{{departurelocation}}</td>
-            <td>{{moment packagedate format="YYYY-MM-DD"}}</td>
-            <td>{{departuretime}}</td>
-            <td>${{costadult}}</td>
-            <td>${{costchild}}</td>
-            <td>{{seatnumber}}</td>
+    <div class="row listreservationdiv">
+            <div class="col-2 text-center">
+                <p class="listreservationtext"><a class="" href="/customer/package/{{packageid}}" role="">{{name}}</a></p>
+            </div>
+            <div class="col-2 text-center">
+                <p class="listreservationtext">{{departuretime}}</p>
+            </div>
+            <div class="col-2 text-center">
+                <p class="listreservationtext">{{cost}}</p>
+            </div>
+            <div class="col-2 text-center">
+                <p class="listreservationtext">{{seatnumber}}</p>
+            </div>
             {{#if confirm}}
-            <td>Confirmed   <a class="btn btn-danger" href="/customer/reservation/{{reservationid}}/cancel" role="button">Cancel</a></td>
+            <div class="col-2 text-center">
+                <p>{{ticketnumber}}</p>
+            </div>
+            <div class="col-2 text-center">
+                <a class="btn btn-danger" href="/customer/reservation/{{reservationid}}/cancel" role="button">Cancel</a>
+            </div>
             {{else}}
-            <td><a class="btn btn-success" href="/customer/reservation/{{reservationid}}/confirm" role="button">Confirm</a>
-                <a class="btn btn-danger" href="/customer/reservation/{{reservationid}}/cancel" role="button">Cancel</a></td>
+                <div class="col-2 text-center">
+                    <a class="btn btn-success" href="/customer/reservation/{{reservationid}}/confirm" role="button">Pay</a>
+                </div>
+                <div class="col-2 text-center">
+                    <a class="btn btn-danger" href="/customer/reservation/{{reservationid}}/cancel" role="button">Cancel</a>
+                </div>
             {{/if}}
-        </tr>
+    </div>
         {{/print}}
-    </tfoot>
-</table>
+</div>
 </div>

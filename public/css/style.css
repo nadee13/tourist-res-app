@@ -1,18 +1,51 @@
-/* Space out content a bit */
+Space out content a bit
 #test{
   padding: 10px;
   background-color: red;
 }
 
-img {
+/* img {
   max-width: 100%;
   max-height: 100%;
+} */
+
+.activated{
+  color: black;
+  background: rgb(159, 247, 159)
+}
+
+.reserveseatdiv{
+  margin-bottom: 15%;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 2px 2px 2px #c5c5c5, -1px -1px #c5c5c5;
+}
+
+.listreservationdiv, .listreservationdivHeader{
+  height: 55px;
+  padding: 1% 2% 2% 2%;
+  box-shadow: 2px 2px 2px #c5c5c5, -1px -1px #c5c5c5;
+  margin-top: 1%;
+  border-radius: 15px;
+}
+
+
+.listreservationdiv, .listreservationdivHeader{
+  background: rgba(255, 255, 255, 0.7);
+}
+
+a:hover, a:visited, a:link, a:active
+{
+    text-decoration: none;
 }
 
 .imagePackage{
-  height: 90%;
-  width: 90%;
+  width: 530px;
   margin-bottom: -1%;
+}
+
+.imagePackage img{
+  max-height: 100%;
+  max-width: 100%;
 }
 
 .imagePackageCust{
@@ -27,10 +60,10 @@ img {
   margin: 5px;
 }
 
-body {
+/* body {
   padding-top: 20px;
   padding-bottom: 20px;
-}
+} */
 h2{
   margin-top: 50px;
   margin-bottom: 40px;
@@ -48,10 +81,39 @@ h2{
   background-color: rgb(253, 192, 190);
 }
 
-nav{
+.listpackagediv{
+  height: 380px;
+  padding: 0% 2% 2% 2%;
+  border-radius: 15px;
+}
+
+.listpackage{
+  background: rgba(255, 255, 255, 0.5);
+  height: 360px;
+  padding: 5% 5% 0% 5%;
+  border-radius: 15px;
+  box-shadow: 2px 2px 2px #c5c5c5, -1px -1px #c5c5c5;
+}
+
+.listpackageimage{
+  height: 200px;
+  margin-bottom: -15%;
+}
+
+.listpackagetext, .listreservationtext{
+  color: black;
+  text-decoration: none;
+}
+
+.listpackageimage img{
+  max-height: 100%;
+  max-width: 100%;
+}
+
+/* nav{
   padding-left: 10% !important;
   padding-right: 10% !important;
-}
+}*/
 
 .detailscon{
   padding-top: 20px;
@@ -65,18 +127,17 @@ nav{
   padding-right: 10% !important;
 }
 
-/* Everything but the jumbotron gets side spacing for mobile first views */
-.header,
+/*Everything but the jumbotron gets side spacing for mobile first views*/ 
 .marketing {
   padding-right: 15px;
   padding-left: 15px;
 }
 
 .page-header{
-  margin-top: 50px; 
+  margin-top: 100px; 
 }
 
-/* Custom page header */
+ /*Custom page header */
 .header {
   padding-bottom: 20px;
   border-bottom: 1px solid #e5e5e5;
@@ -91,12 +152,11 @@ nav{
 /* Custom page footer */
 .footer {
   padding-top: 19px;
-  padding-left: 10% !important;
   color: #777;
   border-top: 1px solid #e5e5e5;
 }
 
-/* Customize container */
+/* Customize container
 @media (min-width: 768px) {
   .container {
     max-width: 730px;
@@ -104,9 +164,9 @@ nav{
 }
 .container-narrow > hr {
   margin: 30px 0;
-}
+} */
 
-/* Main marketing message and sign up button */
+/* Main marketing message and sign up button  */
 .jumbotron {
   text-align: center;
   border-bottom: 1px solid #e5e5e5;
@@ -116,7 +176,7 @@ nav{
   font-size: 21px;
 }
 
-/* Supporting marketing content */
+/* Supporting marketing content  */
 .marketing {
   margin: 40px 0;
 }
@@ -124,29 +184,25 @@ nav{
   margin-top: 28px;
 }
 
-/* Responsive: Portrait tablets and up */
+/* Responsive: Portrait tablets and up  */
 @media screen and (min-width: 768px) {
-  /* Remove the padding we set earlier */
+  /* Remove the padding we set earlier  */
   .header,
   .marketing,
   .footer {
     padding-right: 0;
     padding-left: 0;
   }
-  /* Space out the masthead */
+  /* Space out the masthead  */
   .header {
     margin-bottom: 30px;
   }
-  /* Remove the bottom border on the jumbotron for visual effect */
+  /* Remove the bottom border on the jumbotron for visual effect */ 
   .jumbotron {
     border-bottom: 0;
   }
 }
 
-.page-header{
-  margin-top:0;
-}
-
 footer{
   margin-top:40px;
-}
+} 

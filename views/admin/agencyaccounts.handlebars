@@ -1,29 +1,43 @@
 {{> adminheader}}
 
-<div class="container-fluid detailscon">
-<h2 class="page-header">Agency Accounts</h2>
-</div>
-<div class="topgap">
-<table id="example" class="table accountstable table-striped table-bordered" cellspacing="0" width="100%">
-    <t>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Active</th>
-            <th>Verified</th>
-            <th>Modify</th>
-        </tr>
-    </thead>
-    <tfoot>
+<div class="container-fluid cont">
+<div class="container">
+    <h2 class="headertext">Agency Accounts</h2>
+    <div class="row listreservationdivHeader">
+            <div class="col-3 text-center">
+                <h6 class="listreservationtext">Name</h6>
+            </div>
+            <div class="col-3 text-center">
+                <h6 class="listreservationtext">Email</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6 class="listreservationtext">Active</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6 class="listreservationtext">Verified</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6 class="listreservationtext">Modify</h6>
+            </div>
+    </div>
         {{#print}}
-        <tr>
-            <td>{{name}}</td>
-            <td>{{email}}</td>
-            <td>{{active}}</td>
-            <td>{{verification}}</td>
-            <td><a class="btn btn-success" href="/admin/accounts/agency/{{id}}" role="button">Edit</a></td>
-        </tr>
+    <div class="row listreservationdiv">
+            <div class="col-3 text-center">
+                <p class="listreservationtext">{{name}}</p>
+            </div>
+            <div class="col-3 text-center">
+                <p class="listreservationtext">{{email}}</p>
+            </div>
+            <div class="col-2 text-center">
+                <p class="listreservationtext">{{active}}</p>
+            </div>
+            <div class="col-2 text-center">
+                <p class="listreservationtext">{{verification}}</p>
+            </div>
+            <div class="col-2 text-center">
+                <a class="btn btn-success" href="/admin/accounts/agency/{{id}}" role="button">Edit</a>
+            </div>
+    </div>
         {{/print}}
-    </tfoot>
-</table>
+</div>
 </div>

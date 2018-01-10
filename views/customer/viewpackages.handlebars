@@ -1,32 +1,54 @@
 {{> customerheader}}
 
-<div class="container-fluid detailscon">
-    <h2 class="page-header">Packages</h2>
-</div>
-<div class="topgap">
-<table id="example" class="table accountstable table-striped table-bordered" cellspacing="0" width="100%">
-    <t>
-        <tr>
-            <th>Name</th>
-            <th>Tour Length</th>
-            <th>Departure Location</th>
-            <th>Departure Time</th>
-            <th>Cost ($) - Adult</th>
-            <th>Cost ($) - Child</th>
-        </tr>
-    </thead>
-    <tfoot>
-        {{#print}}
-        <tr>
-            <td>{{name}}</td>
-            <td>{{tourlength}}</td>
-            <td>{{departurelocation}}</td>
-            <td>{{departuretime}}</td>
-            <td>{{costadult}}</td>
-            <td>{{costchild}}</td>
-            <td><a class="btn btn-success" href="/customer/package/{{id}}" role="button">View</a></td>
-        </tr>
-        {{/print}}
-    </tfoot>
-</table>
+<div class="container-fluid cont">
+    <div class="container">
+        <h2 class="headertext">Packages</h2>
+        <div class="row">
+            {{#print}}
+            <div class="col-3 listpackagediv">
+                <div class="listpackage">
+                    <a class="" href="/customer/package/{{id}}" role="">
+                <div class="listpackageimage"><img src="/uploads/{{image}}"></div>
+                <h5 class="listpackagetext">{{name}}</h5>
+                    <p class="listpackagetext">Tour Length: {{tourlength}}</p>
+                    <p class="listpackagetext">Departure Time: {{departuretime}}</p>
+                    <p class="listpackagetext">Cost: ${{cost}}</p>
+                    </a>
+                </div>
+            </div> 
+            {{/print}}
+        </div>
+    </div>
+    <div class="about">
+		<div class="container">
+			<div class="w3l-about-heading">
+				<h5>You may also like</h5>
+				<p>You can select your tour package from here ! Here's some top tour packages we provide !!! </P>
+			</div>
+			<div class="row about-grids">
+				<div class="col-md-3 about-grid">
+					<div class="about-grid-info effect-1">
+							<h4><a class="navtext" href="sigiriya.html">Sigiriya</a></h4>
+					</div>
+				</div>
+				<div class="col-md-3 about-grid">
+					<div class="about-grid-info about-grid-info1 effect-1">
+						 <h4><a class="navtext"  href="polonnaruwa.html">Polonnaruwa</a></h4>
+					</div>
+				</div>
+				<div class="col-md-3 about-grid">
+					<div class="about-grid-info about-grid-info2 effect-1">
+						<h4><a class="navtext"  href="kandy.html">Kandy</a> </h4>
+					</div>
+				</div>
+				<div class="col-md-3 about-grid">
+					<div class="about-grid-info about-grid-info3 effect-1">
+						<h4><a  class="navtext"  href="galle.html"Galle>Galle</a></h4>
+					</div>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+	</div>
+
 </div>

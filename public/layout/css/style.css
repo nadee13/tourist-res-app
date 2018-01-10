@@ -1,0 +1,292 @@
+/*--A Design by W3layouts 
+Author: W3layout
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+--*/
+.custLogCont,  .custRegCont, .custPackCont{
+   background-image: url("/layout/images/authenticate.jpg");
+   background-repeat: no-repeat;
+   min-height: 750px;
+ }
+
+ .cont{
+    margin-top: -6%;
+    background-image: url("/layout/images/background.jpg");
+    background-repeat: no-repeat;
+    min-height: 900px;
+    padding-bottom: 10%; 
+}
+
+.headertext{
+    padding-top: 15%;
+}
+
+ .loginForm{
+   margin-top: 15%;
+   background: rgba(255, 255, 255, 0.5);
+   padding: 0% 20% 5% 20%;
+   border-radius: 10px;
+ }
+
+ .registerForm{
+    margin-top: 8%;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 0% 20% 5% 20%;
+    border-radius: 10px;
+  }
+
+  .addpackForm{
+    margin-top: 20%;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 0% 20% 5% 20%;
+    border-radius: 10px;
+    margin-bottom: 8%;
+  }
+
+  .fadedback{
+    background: rgba(255, 255, 255, 0.4);
+    padding: 5% 20% 5% 20%;
+    border-radius: 10px;
+  }
+
+  .addpackheadertext{
+    margin-top:2%;
+    margin-bottom: 3%;
+  }
+ 
+ .loginHeader{
+   padding-top: 0%;
+   margin-bottom: 5%;
+ }
+
+ .registerHeader{
+    padding-top: -10%;
+    margin: 1% 0% 2% 0%;
+  }
+ 
+.carousel-item{
+    position: absolute;
+}
+.carouselCaption{
+    background-color: transparent;
+    border-radius:50%;
+    height: 300px;
+    width: 300px;
+    position: relative;
+    top: -180px !important;
+    border-width:2px !important;
+    border-style: solid;
+    border-color: #fff;
+    margin: 0 auto;
+}
+
+.carouselCaptionText{
+    margin-top: 100px;
+    text-shadow: 4px 4px 4px #000000;
+    font-size: 26pt;
+}
+
+.carouselCaptionSubText{
+    text-shadow: 4px 4px 4px #000000, -1px -1px #000000;
+    font-size: 16pt;
+}
+
+body a {
+  transition: 0.5s all;
+  -webkit-transition: 0.5s all;
+  -o-transition: 0.5s all;
+  -moz-transition: 0.5s all;
+  -ms-transition: 0.5s all;
+}
+html, body{
+    font-family: 'Oswald', sans-serif;
+    font-size: 100%;
+}
+
+img {
+    -webkit-filter: contrast(130%); /* Safari */
+    filter: contrast(130%);
+}
+
+nav {
+    border: none !important;
+	/*background: none !important;
+    background-color: transparent !important;*/
+    background: rgba(0, 0, 0, 0.2);
+    min-height: 0 !important;
+	color: white !important;
+	padding-left: 10% !important;
+	padding-right: 10% !important;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    background-color: #f5f5f5;
+  }
+
+.navtext{
+    color: white;
+}
+
+.navbar {
+    border: none !important;
+    min-height: 0 !important;
+	color: white !important;
+}
+
+nav > a, nav > div > ul > li > a {
+	background: none !important;
+	color: white !important;
+} 
+
+.navbar .navbar-nav > .active > a, .navbar .navbar-nav > .active > a:hover, .navbar .navbar-nav > .active > a:focus {
+	background: none !important;
+} 
+div#bs-example-navbar-collapse-1 {
+    padding: 0;
+}
+  .carousel-item img{
+	  height: 750px;
+  }
+
+  .about{
+    padding: 4em 0;
+    background: rgba(209, 209, 209, 0.2);
+}
+.w3l-about-heading h2,.codes-heading h2,.w3l-contact-heading h2 {
+    text-align: center;
+    margin: 0;
+    font-size: 3em;
+    color: black;
+	font-family: 'Pacifico', cursive;
+}
+.w3l-about-heading p,.codes-heading p,.w3l-contact-heading p{
+	text-align: center;
+    margin: 1em 0 0 0;
+    font-size: .875em;
+    color: #383838;
+}
+.about-grids {
+    margin: 4em 0 0 0;
+}
+.about-grid{
+	text-align:center;
+}
+.about-grid-info{
+    background: url(../images/a.png)no-repeat 0px 0px;
+    background-size: cover;
+    min-height: 255px;
+}
+.about-grid-info h4{
+    color: #FFF;
+    font-size: 2em;
+    margin:0;
+    font-family: 'Pacifico', cursive;
+    line-height: 7.5em;
+}
+.about-grid-info1{
+	background: url(../images/a1.png)no-repeat 0px 0px;
+	background-size: cover;
+    min-height: 255px;
+}
+.about-grid-info2{
+	background: url(../images/a2.png)no-repeat 0px 0px;
+	background-size: cover;
+    min-height: 255px;
+}
+.about-grid-info3{
+	background: url(../images/a3.png)no-repeat 0px 0px;
+	background-size: cover;
+    min-height: 255px;
+}
+.about-grid-info4{
+	background: url(../images/a4.png)no-repeat 0px 0px;
+	background-size: cover;
+    min-height: 255px;
+}
+.about-grid-info5{
+	background: url(../images/a5.png)no-repeat 0px 0px;
+	background-size: cover;
+    min-height: 255px;
+}
+.about-grid-info6{
+	background: url(../images/a6.png)no-repeat 0px 0px;
+	background-size: cover;
+    min-height: 255px;
+}
+.about-grid-info7{
+	background: url(../images/a7.png)no-repeat 0px 0px;
+	background-size: cover;
+    min-height: 255px;
+}
+.about-grid-info8{
+	background: url(../images/a8.png)no-repeat 0px 0px;
+	background-size: cover;
+    min-height: 255px;
+}
+.about-grid-info9{
+	background: url(../images/a9.png)no-repeat 0px 0px;
+	background-size: cover;
+    min-height: 255px;
+}
+.about-grid-info10{
+	background: url(../images/a10.png)no-repeat 0px 0px;
+	background-size: cover;
+    min-height: 255px;
+}
+.about-grid-info11{
+	background: url(../images/a11.png)no-repeat 0px 0px;
+	background-size: cover;
+    min-height: 255px;
+}
+/*-- Effect 1--*/
+.about-grid-info:after {
+	pointer-events: none;
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    content: '';
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
+.effect-1 {
+	-webkit-transition: background 0.5s, color 0.2s;
+	-moz-transition: background 0.5s, color 0.2s;
+	transition: background 0.5s, color 0.2s;
+}
+.effect-1:after {
+	top: 29px;
+    left: 44px;
+    box-shadow: 0 0 0 2px #FFFFFF;
+    -webkit-transition: -webkit-transform 0.5s, opacity 0.2s;
+    -webkit-transform: scale(0.8);
+    -moz-transition: -moz-transform 0.5s, opacity 0.2s;
+    -moz-transform: scale(0.8);
+    -ms-transform: scale(0.8);
+    transition: transform 0.5s, opacity 0.2s;
+    transform: scale(0.8);
+    opacity: 0;
+}
+.about-grid:hover.about-grid-info{
+	background:#FF7200;
+	color: #fff !important;
+}
+.about-grid:hover .about-grid-info:after {
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+  opacity: 1;
+}
+/*--//Effect 1--*/
+/*-- //about --*/
+  /*-- //responsive --*/

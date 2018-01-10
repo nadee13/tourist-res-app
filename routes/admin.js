@@ -222,7 +222,7 @@ router.get('/accounts/customer/:userid/delete', function(req, res){
 });
 
 //View Admin
-router.get('/myaccount', ensureAuthenticated, function(req, res){
+router.get('/mydetails', ensureAuthenticated, function(req, res){
 	connection.query("select users.id, admins.name, users.email," 
 			+ " users.streetnumber, users.streetname, users.city, users.phonenumber " 
 			+ "from users inner join admins where" 
@@ -232,17 +232,17 @@ router.get('/myaccount', ensureAuthenticated, function(req, res){
 		} else {
 			var obj = {};
 			obj = {print: result};
-			res.render('admin/myaccount', obj);
+			res.render('admin/mydetails', obj);
 		}
 	});
 });
 
 // Update Admin
-router.get('/myaccount/save', function(req, res){
-	res.render('admin/myaccount');
+router.get('/mydetails/save', function(req, res){
+	res.render('admin/mydetails');
 });
 
-router.post('/myaccount/save',
+router.post('/mydetails/save',
 	function(req, res) {
 		connection.query("update users set phonenumber = ? , streetnumber = ? , streetname = ? , city = ? " 
 						+ "where users.id = 4", [req.body.phonenumber, req.body.streetnumber,
@@ -251,7 +251,7 @@ router.post('/myaccount/save',
 				throw err;
 			else {
 				req.flash('success_msg', 'Successfully updated.');
-				res.redirect('/admin//myaccount');
+				res.redirect('/admin//mydetails');
 				//res.redirect('/admin/accounts/customer');
 			}
 		});

@@ -1,33 +1,24 @@
 {{> agencyheader}}
 
-<div class="container-fluid detailscon">
-    <h2 class="page-header">Packages</h2>
-    <div><a class="btn btn-primary" href="/agency/package/add" role="button">Add New</a></div>
-</div>
-<div class="topgap">
-<table id="example" class="table accountstable table-striped table-bordered" cellspacing="0" width="100%">
-    <t>
-        <tr>
-            <th>Name</th>
-            <th>Tour Length</th>
-            <th>Departure Location</th>
-            <th>Departure Time</th>
-            <th>Cost ($) - Adult</th>
-            <th>Cost ($) - Child</th>
-        </tr>
-    </thead>
-    <tfoot>
-        {{#print}}
-        <tr>
-            <td>{{name}}</td>
-            <td>{{tourlength}}</td>
-            <td>{{departurelocation}}</td>
-            <td>{{departuretime}}</td>
-            <td>{{costadult}}</td>
-            <td>{{costchild}}</td>
-            <td><a class="btn btn-success" href="/agency/package/{{id}}" role="button">Edit</a></td>
-        </tr>
-        {{/print}}
-    </tfoot>
-</table>
+<div class="container-fluid cont">
+    <div class="container">
+        <h2 class="headertext">Packages</h2>
+         <div style="margin-bottom: 20px;"><a class="btn btn-primary" href="/agency/package/add" role="button">Add New</a></div>
+        <div class="row">
+            {{#print}}
+            <div class="col-3 listpackagediv">
+                <div class="listpackage">
+                    <a class="" href="/agency/package/{{id}}" role="">
+                <div class="listpackageimage"><img src="/uploads/{{image}}"></div>
+                    <h5 class="listpackagetext">{{name}}</h5>
+                    <p class="listpackagetext">Tour Length: {{tourlength}}</p>
+                    <p class="listpackagetext">Departure Time: {{departuretime}}</p>
+                    <p class="listpackagetext" style="float:left; padding-right:100px">Cost: ${{cost}}</p>
+                    </a>
+                    <a class="btn btn-success" href="/agency/package/{{id}}" role="button">Edit</a>
+                </div>
+            </div> 
+            {{/print}}
+        </div>
+    </div>
 </div>

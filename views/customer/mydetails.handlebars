@@ -1,7 +1,10 @@
-{{> adminheader}}
+{{> customerheader}}
 
-<div class="container-fluid detailscon">
-  <h2 class="page-header">Admin Account</h2>
+<div class="container-fluid cont">
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12 addpackForm">
+  <h2 class="addpackheadertext">My Details</h2>
   {{#print}}
   <div class="row">
     <div class="col">
@@ -10,14 +13,16 @@
           <input readonly type="email" value="{{email}}" class="form-control" placeholder="Email" name="email" required>
         </div>
         <div class="form-group">
-          <label>Name</label>
-          <input readonly type="text" value="{{name}}" class="form-control" placeholder="Name" name="name" required>
+          <label>First Name</label>
+          <input readonly type="text" value="{{firstname}}" class="form-control" placeholder="Name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input readonly type="text" value="{{lastname}}" class="form-control" placeholder="Name" name="name" required>
         </div>
     </div>
     <div class="col">
-      <form method="post" action="/admin/myaccount/save">
-        {{!-- <button type="submit" class="btn btn-success">Save Changes</button>
-        </form> --}}
+      <form method="post" action="/customer/mydetails/save">
         <div class="form-group">
           <label>Street Number</label>
           <input type="text" value="{{streetnumber}}" class="form-control" placeholder="Street Number" name="streetnumber" required>
@@ -40,10 +45,15 @@
             <button type="submit" class="btn btn-success">Save Changes</button>
             </div>
       </div> 
+      
       </form>
+    </div>
+    </div>
+    
+  {{/print}}
     </div>
   </div>  
    
-  {{/print}}
+</div>
 </div>
 

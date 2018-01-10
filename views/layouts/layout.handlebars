@@ -2,6 +2,20 @@
 <html lang="en">
 <head>
 	<title>TouristResApp</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta name="keywords" content="My Trip Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, 
+      Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+      <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+      {{!-- <link href="/layout/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" /> --}}
+      <link rel="stylesheet" href="/layout/css/style.css" type="text/css" media="all" />
+      <link href="/layout/css/font-awesome.css" rel="stylesheet"> 
+      <link href='/layout/css/simplelightbox.min.css' rel='stylesheet' type='text/css'>
+      <link href='https//fonts.googleapis.com/css?family=Oswald:400,700,300' rel='stylesheet' type='text/css'>
+      <link href='https//fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+      {{!-- <script src="/layout/js/jquery-1.11.1.min.js"></script> --}}
+      {{!-- <script src="/layout/js/bootstrap.js"></script> --}}
+      <script src="/layout/js/SmoothScroll.min.js"></script>
 	 <link rel="stylesheet" href="/css/bootstrap.css" />
    <link rel="stylesheet" href="/css/dataTables.bootstrap4.min.css" />
 	 <link rel="stylesheet" href="/css/jquery-ui.css" /> 
@@ -11,12 +25,18 @@
 </head>
 <body>
     {{#if user}}
-    {{else}}  
-    <nav>
-      <ul class="nav nav-pills justify-content-end"> 
-        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+    {{else}}
+    <nav class="navbar fixed-top navbar-expand-lg">
+      <a class="navbar-brand navtext" href="#">The Traveller's Guide</a> <a id="navemail" class="navtext" href="mailto:example@email.com"><i class="fa fa-envelope" aria-hidden="true"></i> touristresapp@gmail.com</a>
+      <button class="navbar-toggler navtext" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon navtext"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-md-auto"> 
+        <li class="nav-item"><a class="nav-link navtext" href="/">Home</a></li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+          <a class="nav-link dropdown-toggle navtext" href="#" id="navbardrop" data-toggle="dropdown">
             Login
           </a>
           <div class="dropdown-menu">
@@ -26,7 +46,7 @@
           </div>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+          <a class="nav-link dropdown-toggle navtext" href="#" id="navbardrop" data-toggle="dropdown">
             Register
           </a>
           <div class="dropdown-menu">
@@ -35,6 +55,7 @@
           </div>
         </li>
       </ul>
+      </div>
     </nav>
     {{/if}}
 
@@ -73,12 +94,19 @@
       </div> 
     </div> <!-- /container -->
     {{{body}}}
-    <footer class="footer">
-      <p >&copy; 2017 TouristResApp, Inc.</p>
-    </footer>
+    
+  <!-- footer -->
+	<div class="footer">
+			<div class="copyright text-center">
+				<p>© 2017 The Traveller's Guide. All Rights Reserved  </p>
+			</div>
+	</div>
+
 
     {{!-- </div> <!-- /container --> --}}
     <script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src='http://maps.google.com/maps/api/js?libraries=places&key=AIzaSyCbgdCayYKKW9PE9JHo3lzYt4ccxfCkGHw'></script>
+    <script type="text/javascript" src="/js/locationpicker.jquery.js"></script>
     <script type="text/javascript" src="/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="/js/dataTables.bootstrap4.min.js"></script>
     <script type="text/javascript" src="/js/popper.js"></script>

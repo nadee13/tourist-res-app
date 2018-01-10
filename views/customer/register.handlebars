@@ -1,7 +1,8 @@
+<div class="container-fluid custRegCont">
 <div class="container">
   <div class="row">
-    <div class="col-lg-12">
-      <h2 class="page-header">Customer Register</h2>
+    <div class="col-lg-12 registerForm">
+      <h2 class="registerHeader">Customer Register</h2>
       <div id="myModal" class="modal"  tabindex="-1" role="dialog">
           <div class="modal-dialog" role="document">
               <div class="modal-content">
@@ -13,36 +14,36 @@
             </div>
         </div> 
       </div> 
-      <form method="post" action="/customer/register" id="form-register">
-        <div class="form-group">
+      <form method="post" class="form-row" action="/customer/register" id="form-register">
+        <div class="form-group col-md-6">
           <label>Email</label>
           <input type="email" class="form-control" placeholder="Email" name="email" required>
         </div>
-        <div class="form-group">
+        <div class="form-group col-md-6">
           <label>Password</label>
           <input type="password" class="form-control" placeholder="Password" name="password" id="password" required>
         </div>
-        <div class="form-group">
+        <div class="form-group col-md-6">
           <label>First Name</label>
           <input type="text" class="form-control" placeholder="First Name" name="firstname" required>
         </div>
-        <div class="form-group">
+        <div class="form-group col-md-6">
           <label>Last Name</label>
           <input type="text" class="form-control" placeholder="Last Name" name="lastname" required>
         </div>
-        <div class="form-group">
+        <div class="form-group col-md-6">
           <label>Street Number</label>
           <input type="text" class="form-control" placeholder="Street Number" name="streetnumber" required>
         </div>
-        <div class="form-group">
+        <div class="form-group col-md-6">
           <label>Street Name</label>
           <input type="text" class="form-control" placeholder="Street Name" name="streetname" required>
         </div>
-        <div class="form-group">
+        <div class="form-group col-md-6">
           <label>City</label>
           <input type="text" class="form-control" placeholder="City" name="city" required>
         </div>
-        <div class="form-group">
+        <div class="form-group col-md-6">
           <label>Gender</label>
           <select class="form-control" name="gender" required>
             <option value=""></option>
@@ -50,17 +51,18 @@
             <option value="Female">Female</option>
         </select>
         </div>
-        <div class="form-group">
+        <div class="form-group col-md-6">
           <label>Phone Number</label>
           <input type="text" class="form-control" placeholder="XXXXXXXXXX" name="phonenumber" maxlength="10" required>
         </div>
-        <div class="form-group">
+        <div class="form-group col-md-6">
           <label>Date of Birth</label>
           <input type='text' id="datepicker" class="form-control"  name='dateofbirth' placeholder='YYYY-MM-DD' required>
         </div>
+        <div class="col-11"></div>
         <button type="submit" class="btn btn-default">Submit</button>
       </form>
     </div>
   </div>
 </div>
-
+</div>

@@ -1,27 +1,24 @@
 {{> agencyheader}}
 
-<div class="container">
+<div class="container-fluid cont">
+   <div class="container">
   <div class="row">
-    <div class="col-lg-12">
-      <h2 class="page-header">Add Package</h2>
-        <form method="post" action="/agency/package/add" enctype="multipart/form-data">
-          <div class="form-group">
+    <div class="col-lg-12 addpackForm">
+      <h2 class="addpackheadertext">Add Package</h2>
+        <form method="post" class="form-row" action="/agency/package/add" enctype="multipart/form-data">
+          <div class="form-group col-md-6">
             <label>Name</label>
             <input type="text" class="form-control" placeholder="Name" name="name" required>
           </div>
-          <div class="form-group">
-            <label>Description</label>
-            <textarea type="text" class="form-control" placeholder="Description" name="description" rows="5" required></textarea>
-          </div>
-          <div class="form-group">
-            <label>Tour Length (Hours)</label>
-            <input type="text" class="form-control" placeholder="Tour Length" name="tourlength" required>
-          </div>
-          <div class="form-group">
+          <div class="form-group col-md-6">
             <label>Departure Location</label>
             <input type="text" class="form-control" placeholder="Departure Location" name="departurelocation" required>
           </div>
-          <div class="form-group">
+          <div class="form-group col-md-6">
+            <label>Tour Length (Hours)</label>
+            <input type="text" class="form-control" placeholder="Tour Length" name="tourlength" required>
+          </div>
+          <div class="form-group col-md-6">
             <label>Bus Name</label>
             <select class="form-control" name="busname" required>
               <option value=""></option>
@@ -29,30 +26,40 @@
                 <option value="{{name}}">{{name}}</option>
                 {{/print}}
             </select>
-          </div> 
-          <div class="form-group">
+            </div>
+          <div class="form-group col-md-6">
             <label>Departure Time</label>
             <input type="text" class="form-control" placeholder="Departure Time" name="departuretime" required>
           </div>
-          <div class="form-group">
+          <div class="form-group col-md-6">
             <label>Image</label>
             <input type="file" class="form-control-file" name="image" accept="image/jpeg" required>
           </div>
-          <div class="form-group">
-            <label>Cost ($) - Adult</label>
-            <input type="text" class="form-control" placeholder="Cost ($) - Adult" name="costadult" required>
+          <div class="form-group col-md-6">
+            <label>Cost ($)</label>
+            <input type="text" class="form-control" placeholder="Cost ($)" name="cost" required>
           </div>
-          <div class="form-group">
-            <label>Cost ($) - Child</label>
-            <input type="text" class="form-control" placeholder="Cost ($) - Child" name="costchild" required>
-          </div>
-          <div class="form-group">
+          <div class="form-group col-md-6">
           <label>Package Date</label>
-            <input type='date' class="packagedatepicker" class="form-control"  name='packagedate' placeholder='YYYY-MM-DD' required>
+            <input type='date' class="packagedatepicker form-control"  name='packagedate' placeholder='YYYY-MM-DD' required>
           </div>
-          <button type="submit" class="btn btn-success">Save</button>
+          <div class="form-group col-md-6">
+            <label>Tour Location</label><br>
+            <input type="text" id="us2-address" name="tourlocation" class="form-control"/><br>
+            <div id="us2" style="width: 500px; height: 400px;"></div><br>		
+            Lat.: <input type="text" name="lat" id="us2-lat"/>
+            Long.: <input type="text" name="lon" id="us2-lon"/> 
+            <div class="input_fields_wrap"></div>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Description</label>
+            <textarea type="text" class="form-control" placeholder="Description" name="description" rows="21" required></textarea>
+          </div>
+        <div class="col-10"></div>
+          <button type="submit" class="btn btn-success">Save Package</button>
         </form>
       </div>  
   </div>
+</div>
 </div>
 
