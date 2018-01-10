@@ -23,8 +23,6 @@
     </div>
     <div class="col">
       <form method="post" action="/agency/mydetails/save">
-        {{!-- <button type="submit" class="btn btn-success">Save Changes</button>
-        </form> --}}
         <div class="form-group">
           <label>Street Number</label>
           <input type="text" value="{{streetnumber}}" class="form-control" placeholder="Street Number" name="streetnumber" required>
@@ -42,9 +40,9 @@
           <input type="text" value="{{phonenumber}}" class="form-control" placeholder="XXXXXXXXXX" name="phonenumber" maxlength="10" required>
         </div>
         <div class="row">
-            <div class="col-9"></div>
+            <div class="col-8"></div>
             <div class="col">
-            <button type="submit" class="btn btn-success">Save Changes</button>
+            <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save Changes</button>
             </div>
       </div> 
       </form>

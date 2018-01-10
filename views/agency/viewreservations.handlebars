@@ -1,0 +1,78 @@
+{{> agencyheader}}
+
+<div class="container-fluid cont">
+<div class="container">
+    <h2 class="headertext">Reservations</h2>
+    <form method="post" class="form-row"  action="/agency/reservation/search">
+      <div class="form-group col-4">
+        <input type="text"  class="form-control" placeholder="Search.." name="search" required>
+      </div>
+      <div class="form-group col-3">
+        <select class="form-control" name="criteria" required>
+            <option value="confirm">Confirm</option>
+            <option value="ticketnumber">Ticket Number</option>
+        </select>
+      </div>
+      <div class="col-2">
+          <button type="submit" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
+        </div>
+    </form>
+    <div class="row listreservationdivHeader">
+            <div class="col-2 text-center">
+                <h6 class="listreservationtext">Package</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6 class="listreservationtext">Customer</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6 class="listreservationtext">Customer Email</h6>
+            </div>
+            <div class="col-1 text-center">
+                <h6>Cost ($)</h6>
+            </div>
+            <div class="col-1 text-center">
+                <h6>Seat Number</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6>Ticket Number</h6>
+            </div>
+            <div class="col-2 text-center">
+                <h6>Delete</h6>
+            </div>
+    </div>
+        {{#print}}
+    <div class="row listreservationdiv">
+        <div class="col-2 text-center">
+            <p class="listreservationtext"><a class="" href="/agency/package/{{packageid}}" role="">{{name}}</a></p>
+        </div>
+        <div class="col-2 text-center">
+            <p class="listreservationtext">{{firstname}}</p>
+        </div>
+        <div class="col-2 text-center">
+            <p class="listreservationtext">{{customeremail}}</p>
+        </div>
+        <div class="col-1 text-center">
+            <p class="listreservationtext">{{cost}}</p>
+        </div>
+        <div class="col-1 text-center">
+            <p class="listreservationtext">{{seatnumber}}</p>
+        </div>
+        {{#if confirm}}
+        <div class="col-2 text-center">
+            <p>Confirmed: {{ticketnumber}}</p>
+        </div>
+        <div class="col-2 text-center">
+            <a class="btn btn-danger" href="/agency/reservation/{{reservationid}}/cancel" role="button"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</a>
+        </div>
+        {{else}}
+            <div class="col-2 text-center">
+                <p>Not Confirmed</p>
+            </div>
+            <div class="col-2 text-center">
+                <a class="btn btn-danger" href="/agency/reservation/{{reservationid}}/cancel" role="button"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</a>
+            </div>
+        {{/if}}
+    </div>
+        {{/print}}
+</div>
+</div>

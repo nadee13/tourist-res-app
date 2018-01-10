@@ -1,4 +1,4 @@
-{{> customerheader}}
+{{> agencyheader}}
 
 <div class="container-fluid cont">
 <div class="container">
@@ -40,8 +40,15 @@
             <p>Longitude {{lon}}</p>
           </div>
         </div>
-        <a class="btn btn-success" href="/customer/package/{{id}}/reserveseat" role="button">Reserve Seat</a>
+        <a class="btn btn-success" href="/agency/package/{{id}}/reserveseat" role="button"><i class="fa fa-lock" aria-hidden="true"></i> Reserve Seat</a>
       </div>
+    </div>
+    <div class="form-group col-md-12">
+      <label>Tour Location</label><br>
+      <div id="viewus2" style="width: 1050px; height: 400px; margin-bottom: 100px;"></div><br>		
+      Lat.: <input hidden readonly type="text" name="lat" value="{{lat}}" id="viewus2-lat"/>
+      Long.: <input hidden readonly type="text" style="" value="{{lon}}" name="lon" id="viewus2-lon"/> 
+      <div class="input_fields_wrap"></div>
     </div>
     {{/print}}
 </div>

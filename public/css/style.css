@@ -88,7 +88,7 @@ h2{
 }
 
 .listpackage{
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.7);
   height: 360px;
   padding: 5% 5% 0% 5%;
   border-radius: 15px;
@@ -151,7 +151,7 @@ h2{
 
 /* Custom page footer */
 .footer {
-  padding-top: 19px;
+  padding-bottom: 0px;
   color: #777;
   border-top: 1px solid #e5e5e5;
 }
@@ -203,6 +203,35 @@ h2{
   }
 }
 
-footer{
-  margin-top:40px;
-} 
+a, a:hover {
+	text-decoration: none;
+}
+
+.socialbtns, .socialbtns ul, .socialbtns li {
+  margin: 0;
+  padding: 2px;
+}
+
+.socialbtns li {
+    list-style: none outside none;
+    display: inline-block;
+}
+
+.socialbtns .fa {
+	width: 40px;
+  height: 32px;
+	color: #000;
+	background-color: #FFF;
+	border: 1px solid #000;
+	padding-top: 6px;
+	border-radius: 50%;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	-o-border-radius: 50%;
+}
+
+.socialbtns .fa:hover {
+	color: #FFF;
+	background-color: #000;
+	border: 1px solid #000;
+}

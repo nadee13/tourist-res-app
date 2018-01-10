@@ -1,0 +1,64 @@
+{{> adminheader}}
+
+<div class="container-fluid cont">
+   <div class="container">
+  <div class="row">
+    <div class="col-lg-12 addpackForm">
+      <h2 class="addpackheadertext">Package Details</h2>
+    {{#print}}
+    <form method="post" class="form-row" action="/admin/package/{{id}}/save" enctype="multipart/form-data">
+      <div class="form-group col-md-6">
+        <label>Image</label>
+        <div class="imagePackage">
+          <img src="/uploads/{{image}}">
+        </div>
+        </div>
+      <div class="col-md-6">
+        <div class="row">
+        <div class="col"></div>
+        <div class="col">
+           <a class="btn btn-danger" href="/admin/package/{{id}}/delete" role="button"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete Package</a>
+        </div>
+      </div>
+      <div class="form-group status">
+        <label>Name</label>
+        <input readonly type="text" readonly class="form-control" value="{{name}}" placeholder="Name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label>Tour Length (Hours)</label>
+        <input readonly type="text" class="form-control" value="{{tourlength}}" placeholder="Tour Length" name="tourlength" required>
+      </div>
+      <div class="form-group">
+        <label>Departure Location</label>
+        <input readonly type="text" class="form-control" value="{{departurelocation}}" placeholder="Departure Location" name="departurelocation" required>
+      </div>
+      <div class="form-group">
+        <label>Departure Time</label>
+        <input readonly type="text" class="form-control" value="{{departuretime}}" placeholder="Departure Time" name="departuretime" required>
+      </div>
+      </div>
+      <div class="form-group col-md-12">
+        <label>Description</label>
+        <textarea readonly type="text" class="form-control" value="" placeholder="Description" name="description" rows="5" required>{{description}}</textarea>
+      </div>
+      
+      <div class="form-group col-md-6">
+        <label>Cost ($)</label>
+        <input readonly type="text" class="form-control" value="{{cost}}" placeholder="Cost ($)" name="cost" required>
+      </div>
+      <div class="form-group col-md-6">
+      <label>Package Date</label>
+        <input readonly type='text' value="{{moment packagedate format="YYYY-MM-DD"}}" class="form-control"  name='packagedate' placeholder='YYYY-MM-DD' required>
+      </div>
+      <div class="form-group col-md-6">
+        <label>Bus Name</label> 
+        <select class="form-control" name="busname" required>
+          <option value="{{busname}}">{{busname}}</option>
+        </select>
+      </div> 
+    {{/print}}
+    </form>
+      </div>  
+  </div>
+</div>
+</div>

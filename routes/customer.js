@@ -340,7 +340,6 @@ router.get('/reservation', ensureAuthenticated, function(req, res){
 			});
 		}
 	});
-	
 });
 
 router.get('/reservation/:reservationid/cancel', ensureAuthenticated, function(req, res){
@@ -392,6 +391,55 @@ router.get('/reservation/:reservationid/confirm', ensureAuthenticated, function(
 							res.redirect('/customer/reservation');
 						}
 					});
+				}
+			});
+		}
+	});
+});
+
+router.post('/package/search', ensureAuthenticated, function(req, res){
+	var search = req.body.search;
+	var criteria = req.body.criteria;
+	connection.query("select * from packages where packagedate >= curdate() && packages.name = '" +  search + "';", function (err, result){
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			obj = {print: result};
+			res.render('customer/viewpackages', obj);
+		}
+	});
+});
+
+router.post('/reservation/search', ensureAuthenticated, function(req, res){
+	var search = req.body.search;
+	var criteria = req.body.criteria;
+	if(criteria == 'confirm'){
+		if(search == 'confirmed'){
+			search = 1;
+		}
+		if(search == 'not confirmed'){
+			search = 0;
+		}
+	}
+	var customerid;
+	connection.query("select customers.id as customerid from customers inner join users on customers.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+		customerid = result[0].customerid;
+		console.log('customerid: ' + customerid);
+		if(err){
+			throw err;
+		} else {
+			connection.query("select reservations.id as reservationid, reservations.packageid, reservations.confirm, reservations.ticketnumber, seats.number as seatnumber, packages.* from reservations " 
+							+ "inner join seats on seats.id = reservations.seatid "
+							+ "inner join packages on packages.id = reservations.packageid " 
+							+ "where packages.packagedate >= curdate() && reservations.customerid = " + customerid + " && "+ criteria +" = '" +  search + "';", function (err, result){
+				if(err){
+					throw err;
+				} else {
+					var obj = {};
+					obj = {print: result};
+					console.log('obj: ' + JSON.stringify(obj));
+					res.render('customer/viewreservations', obj);
 				}
 			});
 		}

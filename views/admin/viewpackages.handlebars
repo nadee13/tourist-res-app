@@ -1,10 +1,9 @@
-{{> agencyheader}}
+{{> adminheader}}
 
 <div class="container-fluid cont">
     <div class="container">
         <h2 class="headertext">Packages</h2>
-         <div style="margin-bottom: 20px;"><a class="btn btn-primary" href="/agency/package/add" role="button"><i class="fa fa-plus" aria-hidden="true"></i> Add New</a></div>
-            <form method="post" class="form-row" action="/agency/package/search">
+            <form method="post" class="form-row" action="/admin/package/search">
             <div class="form-group col-4">
                 <input type="text"  class="form-control" placeholder="Search by Name.." name="search" required>
             </div>
@@ -16,14 +15,14 @@
             {{#print}}
             <div class="col-3 listpackagediv">
                 <div class="listpackage">
-                    <a class="" href="/agency/package/{{id}}/view" role="">
+                    <a class="" href="/admin/package/{{id}}/view" role="">
                 <div class="listpackageimage"><img src="/uploads/{{image}}"></div>
                     <h5 class="listpackagetext">{{name}}</h5>
                     <p class="listpackagetext">Tour Length: {{tourlength}}</p>
                     <p class="listpackagetext">Departure Time: {{departuretime}}</p>
                     <p class="listpackagetext" style="float:left; padding-right:80px">Cost: ${{cost}}</p>
                     </a>
-                    <a class="btn btn-success" href="/agency/package/{{id}}/edit" role="button"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+                    <a class="btn btn-success" href="/admin/package/{{id}}/edit" role="button"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
                 </div>
             </div> 
             {{/print}}

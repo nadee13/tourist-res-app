@@ -400,7 +400,7 @@ router.post('/package/add', upload.single('image'), ensureAuthenticated, functio
 	}
 );
 
-router.get('/package/:packageid', ensureAuthenticated, function(req, res){
+router.get('/package/:packageid/edit', ensureAuthenticated, function(req, res){
 	connection.query("select packages.*, buses.name as busname from packages inner join buses on packages.busid = buses.id"
 					+ " where packages.id = " + req.params.packageid, function (err, result){
 						console.log('result: ' + JSON.stringify(result));
@@ -416,12 +416,54 @@ router.get('/package/:packageid', ensureAuthenticated, function(req, res){
 				} else {
 					obj = {print: result, print1: result1};
 					console.log('obj: ' + JSON.stringify(obj));
-			res.render('agency/editpackage', obj);
+					res.render('agency/editpackage', obj);
 				}
 			});
 		}
 	});
 });
+
+router.get('/package/:packageid/view', ensureAuthenticated, function(req, res){
+	connection.query("select packages.*, buses.name as busname from packages inner join buses on packages.busid = buses.id"
+					+ " where packages.id = " + req.params.packageid, function (err, result){
+						var agencyid = result[0].agencyid;
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			connection.query("select agencies.name as agencyname from agencies where agencies.id = " + agencyid, function (err1, result1){
+				if(err1){
+					throw err1;
+				} else {
+					obj = {print: result, print1: result1};
+					res.render('agency/viewpackage', obj);
+				}
+			});
+		}
+	});
+});
+
+
+router.get('/package/:packageid/reserveseat', ensureAuthenticated, function(req, res){
+	connection.query("select packages.id as packageid, packages.name as packagename, buses.name as busname, buses.*, agencies.name as agencyname, agencies.* from packages inner join buses on packages.busid = buses.id inner join agencies on agencies.id = packages.agencyid where packages.id = " + req.params.packageid, function (err, result){
+		if(err){
+			throw err;
+		} else {
+			var obj = {};
+			//console.log('obj: ' + JSON.stringify(obj));
+			connection.query("select seats.* from seats where packageid = " + req.params.packageid, function (err1, result1){
+				if(err1){
+					throw err1;
+				} else {
+					obj = {print: result, print1: result1};
+					console.log('seatsobj: ' + JSON.stringify(obj));
+					res.render('agency/reserveseat', obj);
+				}
+			});
+		}
+	});
+});
+
 
 router.get('/package/:packageid/save', ensureAuthenticated, function(req, res){
 	res.render('agency/editpackage');
@@ -479,5 +521,146 @@ router.get('/package/:packageid/delete', ensureAuthenticated, function(req, res)
 		}
 	});
 });
+
+//Reservations
+router.get('/reservation', ensureAuthenticated, function(req, res){
+	connection.query("select agencies.id from agencies inner join users on agencies.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+		var agencyid = result[0].id;
+		if(err){
+			throw err;
+		} else {
+				connection.query("select customers.firstname, reservations.id as reservationid, reservations.packageid, reservations.confirm, reservations.ticketnumber, seats.number as seatnumber, packages.*, users.email as customeremail from reservations " 
+					+ "inner join users on users.id = (select customers.userid from customers where customers.id = reservations.customerid) "
+					+ "inner join seats on seats.id = reservations.seatid "
+					+ "inner join packages on packages.id = reservations.packageid " 
+					+ "inner join customers on customers.id = reservations.customerid " 
+					+ "where packages.packagedate >= curdate() && packages.agencyid = " + agencyid, function (err, result){
+					if(err){
+						throw err;
+					} else {
+						var obj = {};
+						obj = {print: result};
+						console.log('res obj: ' + JSON.stringify(obj));
+						res.render('agency/viewreservations', obj);
+				}
+			});
+		}
+	});
+});
+
+router.get('/reservation/:reservationid/cancel', ensureAuthenticated, function(req, res){
+	var reservationid = req.params.reservationid;
+	var seatid;
+	connection.query("select seatid from reservations where reservations.id = " + req.params.reservationid, function (err, result){
+		seatid = result[0].seatid;
+		if (err)
+			throw err;
+		else {
+			connection.query("update seats set status = 0 where seats.id = " + seatid, function (err, result){
+				if (err)
+					throw err;
+				else {
+					connection.query("delete from reservations where id = " + req.params.reservationid, function (err, result){
+						if (err)
+							throw err;
+						else {
+							req.flash('success_msg', 'Successfully cancelled.');
+							res.redirect('/agency/reservation');
+						}
+					});
+				}
+			});
+		}
+	});
+});
+
+router.post('/bus/search', ensureAuthenticated, function(req, res){
+	var search = req.body.search;
+	var criteria = req.body.criteria;
+	if(criteria == 'availability'){
+		if(search == 'available'){
+			search = 1;
+		}
+		if(search == 'not available'){
+			search = 0;
+		}
+	}
+	connection.query("select agencies.id from agencies inner join users on agencies.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+		var agencyid = result[0].id;
+		if(err){
+			throw err;
+		} else {
+			connection.query("select buses.id, buses.name, buses.registrationnumber , buses.category, buses.numberofseats, " +  
+							"buses.availability from buses where buses.agencyid = " + agencyid + " && "+ criteria +" = '" +  search + "';", function (err, result){
+				if(err){
+					throw err;
+				} else {
+					var obj = {};
+					obj = {print: result};
+					res.render('agency/viewbuses', obj);
+				}
+			});
+		}
+	});
+});
+
+router.post('/package/search', ensureAuthenticated, function(req, res){
+	var search = req.body.search;
+	var criteria = req.body.criteria;
+	connection.query("select agencies.id from agencies inner join users on agencies.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+		var agencyid = result[0].id;
+		if(err){
+			throw err;
+		} else {
+			connection.query("select packages.id, packages.name, packages.description , packages.tourlength, packages.tourlength, " 
+							+ "packages.departurelocation, packages.departuretime, packages.image, packages.cost, packages.packagedate" 
+							+ " from packages where packages.agencyid = " + agencyid + " && packages.name = '" +  search + "';", function (err, result){
+				if(err){
+					throw err;
+				} else {
+					var obj = {};
+					obj = {print: result};
+					res.render('agency/viewpackages', obj);
+				}
+			});
+		}
+	});
+});
+
+router.post('/reservation/search', ensureAuthenticated, function(req, res){
+	var search = req.body.search;
+	var criteria = req.body.criteria;
+	if(criteria == 'confirm'){
+		if(search == 'confirmed'){
+			search = 1;
+		}
+		if(search == 'not confirmed'){
+			search = 0;
+		}
+	}
+	connection.query("select agencies.id from agencies inner join users on agencies.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
+		var agencyid = result[0].id;
+		if(err){
+			throw err;
+		} else {
+				connection.query("select customers.firstname, reservations.id as reservationid, reservations.packageid, reservations.confirm, reservations.ticketnumber, seats.number as seatnumber, packages.*, users.email as customeremail from reservations " 
+					+ "inner join users on users.id = (select customers.userid from customers where customers.id = reservations.customerid) "
+					+ "inner join seats on seats.id = reservations.seatid "
+					+ "inner join packages on packages.id = reservations.packageid " 
+					+ "inner join customers on customers.id = reservations.customerid " 
+					+ "where packages.packagedate >= curdate() && packages.agencyid = " + agencyid + "  && "+ criteria +" = '" +  search + "';", function (err, result){
+					if(err){
+						throw err;
+					} else {
+						var obj = {};
+						obj = {print: result};
+						console.log('res obj: ' + JSON.stringify(obj));
+						res.render('agency/viewreservations', obj);
+				}
+			});
+		}
+	});
+});
+
 
 module.exports = router;

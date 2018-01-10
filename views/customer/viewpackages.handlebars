@@ -3,6 +3,14 @@
 <div class="container-fluid cont">
     <div class="container">
         <h2 class="headertext">Packages</h2>
+        <form method="post" class="form-row" action="/customer/package/search">
+            <div class="form-group col-4">
+                <input type="text"  class="form-control" placeholder="Search by Name.." name="search" required>
+            </div>
+            <div class="col-2">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
+                </div>
+            </form>
         <div class="row">
             {{#print}}
             <div class="col-3 listpackagediv">

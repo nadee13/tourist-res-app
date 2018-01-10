@@ -1,9 +1,8 @@
-{{> agencyheader}}
+{{> adminheader}}
 <div class="container-fluid cont">
 <div class="container listrowcont">
     <h2 class="headertext">Buses</h2>
-    <div style="margin-bottom: 2%;"><a class="btn btn-primary" href="/agency/bus/add" role="button"><i class="fa fa-plus" aria-hidden="true"></i> Add New</a></div>
-    <form method="post" class="form-row"  action="/agency/bus/search">
+    <form method="post" class="form-row"  action="/admin/bus/search">
       <div class="form-group col-4">
         <input type="text"  class="form-control" placeholder="Search.." name="search" required>
       </div>
@@ -61,10 +60,9 @@
                 {{/if}}
             </div>
             <div class="col-2 text-center">
-                <a class="btn btn-success" href="/agency/bus/{{id}}" role="button"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+                <a class="btn btn-success" href="/admin/bus/{{id}}" role="button"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
             </div>
 </div>
-
             {{/print}}
 </div>
 </div>

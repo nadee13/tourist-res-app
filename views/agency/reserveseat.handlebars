@@ -1,10 +1,10 @@
-{{> customerheader}}
+{{> agencyheader}}
 
 <div class="container-fluid cont">
 <div class="container">
    {{#print}}
   <h2 class="headertext">{{packagename}}</h2>
-    <form method="post" action="/customer/package/{{packageid}}/reserveseat">
+    <form method="post" action="#">
   {{/print}}
     <div class="row">
       <div class="col-3 reserveseatdiv">
@@ -26,7 +26,7 @@
         </div>
       </div>
       <div class="col-4" style="padding: 2%;">
-          <button type="submit" style="margin: 0% 0% 10% 25%;" class="btn btn-default"><i class="fa fa-lock" aria-hidden="true"></i> Reserve</button>
+          <button disabled type="submit" style="margin: 0% 0% 10% 25%;" class="btn btn-default"><i class="fa fa-times" aria-hidden="true"></i> Reserve</button>
           <div class="row"><div style="margin: 0% 0% 3% 20%; border-radius: 5px; width: 40px; height:40px; background-color: rgb(159, 247, 159);"></div><p style="margin-left: 20px;">Selected</p></div> 
           <div class="row"><div style="margin: 0% 0% 3% 20%; border-radius: 5px; width: 40px; height:40px; background-color: #4d9e4d;"></div><p style="margin-left: 20px;">Available</p></div>  
           <div class="row"><div style="margin: 0% 0% 3% 20%; border-radius: 5px; width: 40px; height:40px; background-color: #d9b44f;"></div><p style="margin-left: 20px;">Booked</p></div>  
