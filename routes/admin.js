@@ -15,15 +15,16 @@ connection.query('USE touristappdatabase');
 
 //Profile
 router.get('/home', ensureAuthenticated, function(req, res){
+	req.session.user = req.user.email;
 	res.render('admin/home');
 });
 
 function ensureAuthenticated(req, res, next){
-	if(req.isAuthenticated()){
+	if(req.isAuthenticated() && req.user.role == 'admin'){
 		return next();
 	} else {
 		req.flash('error_msg','You are not logged in');
-		res.redirect('/admin/login');
+		res.redirect('/login');
 	}
 }
 
@@ -93,65 +94,11 @@ passport.use('local-admin', new LocalStrategy({
 
 router.post('/register',
     passport.authenticate('local-admin', {
-        successRedirect:'/admin/login', 
+        successRedirect:'/login', 
         failureRedirect:'/admin/register', 
         badRequestMessage:'Invalid Registration', 
         failureFlash: true
     })
-);
-
-//Login
-router.get('/login', function(req, res){
-	res.render('admin/login');
-});
-
-passport.serializeUser(function(user, done) {
-	done(null, user.id);
-});
-
-passport.deserializeUser(function(id, done) {
-	connection.query("SELECT * FROM users WHERE id = " + id, function(err, rows){
-		done(err, rows[0]);
-	})
-});
-
-passport.use('local-login-admin', new LocalStrategy({
-		usernameField: 'email',
-		passwordField: 'password',
-		passReqToCallback: true
-	},
-	function(req, email, password, done) {
-		connection.query("SELECT * FROM users WHERE email = ?",[email], function(err, rows){
-			////console.log('rows: ' + rows);
-			if (err)
-				return done(err);
-			if (!rows.length) {
-				//req.flash('error_msg', 'Invalid email!');
-				return done(null, false, {message: '0'}); // req.flash is the way to set flashdata using connect-flash
-			}
-			// if the user is found but the password is wrong
-			if (!bcrypt.compareSync(password, rows[0].password))
-				//req.flash('error_msg', 'Invalid password!');
-				return done(null, false, {message: '1'}); // create the loginMessage and save it to session as flashdata
-
-			// if the user is found but the password is wrong
-			if (!rows[0].active)
-			//req.flash('error_msg', 'User not yet confirmed!');
-				return done(null, false, {message: '2'});
-
-			// all is well, return successful user
-			return done(null, rows[0]);
-		});
-	}
-));
-
-router.post('/login',
-	passport.authenticate('local-login-admin', {
-		successRedirect:'/admin/home', 
-		failureRedirect:'/admin/login', 
-		badRequestMessage:'' , 
-		failureFlash: true
-	})
 );
 
 //Logout
@@ -160,7 +107,7 @@ router.get('/logout', function(req, res){
 
 	req.flash('success_msg', 'You are logged out');
 
-	res.redirect('/admin/login');
+	res.redirect('/login');
 });
 
 //Customer Account

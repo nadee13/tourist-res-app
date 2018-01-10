@@ -32,15 +32,16 @@ connection.query('USE touristappdatabase');
 
 //Profile
 router.get('/home', ensureAuthenticated, function(req, res){
+	req.session.user = req.user.email;
 	res.render('customer/home');
 });
 
 function ensureAuthenticated(req, res, next){
-	if(req.isAuthenticated()){
+	if(req.isAuthenticated() && req.user.role == 'customer'){
 		return next();
 	} else {
 		req.flash('error_msg','You are not logged in');// //
-		res.redirect('/customer/login');
+		res.redirect('/login');
 	}
 }
 
@@ -141,7 +142,7 @@ passport.use('local-customer', new LocalStrategy({
 
 router.post('/register',
     passport.authenticate('local-customer', {
-        successRedirect:'/customer/login', 
+        successRedirect:'/login', 
         failureRedirect:'/customer/register', 
         badRequestMessage:'Invalid Registration', 
         failureFlash: true
@@ -157,66 +158,11 @@ router.get('/verifyemail/:code' , function(req, res){
 		}else {
 			connection.query("update users set verification = 1 where id = " + rows[0].id ,function(err, rows) {
 				req.flash('success_msg', 'Email verified!'); // req.flash is the way to set flashdata using connect-flash
-				res.redirect('/customer/login');
+				res.redirect('/login');
 			});
 		}
 	});
 });
-
-
-//Login
-router.get('/login', function(req, res){
-	res.render('customer/login');
-});
-
-passport.serializeUser(function(user, done) {
-	done(null, user.id);
-});
-
-passport.deserializeUser(function(id, done) {
-	connection.query("SELECT * FROM users WHERE id = " + id, function(err, rows){
-		done(err, rows[0]);
-	})
-});
-
-passport.use('local-login-customer', new LocalStrategy({
-		usernameField: 'email',
-		passwordField: 'password',
-		passReqToCallback: true
-	},
-	function(req, email, password, done) {
-		connection.query("SELECT * FROM users where email = ? && role = 'customer'",[email], function(err, rows){
-			if (err)
-				return done(err);
-			if (rows[0]==null) 
-				//req.flash('error_msg', 'Invalid email!'); //
-				return done(null, false,  req.flash('Invalid email!')); // req.flash is the way to set flashdata using connect-flash
-			
-
-			// if the user is found but the password is wrong
-			if (!bcrypt.compareSync(password, rows[0].password))
-				//req.flash('error_msg', 'Invalid password!'); //
-				return done(null, false, req.flash('error_msg', 'Invalid password!')); // create the loginMessage and save it to session as flashdata
-
-			// if the user is found but not confirmed
-			if (!rows[0].active){
-				//req.flash('error_msg', 'User not yet confirmed!');
-				return done(null, false, req.flash('error_msg', 'User not yet confirmed!'));
-			}
-			// all is well, return successful user
-			req.session.user = rows[0].email;
-			return done(null, rows[0]);
-		});
-	}
-));
-
-router.post('/login',
-	passport.authenticate('local-login-customer', {
-		successRedirect:'/customer/home', 
-		failureRedirect:'/customer/login', 
-		badRequestMessage:'Please enter email and password' , 
-		failureFlash: true
-	}));
 
 //Logout
 router.get('/logout', function(req, res){
@@ -224,7 +170,7 @@ router.get('/logout', function(req, res){
 
 	req.flash('success_msg', 'You are logged out');
 	req.session.destroy();
-	res.redirect('/customer/login');
+	res.redirect('/login');
 });
 
 //View Customer

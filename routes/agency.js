@@ -44,15 +44,16 @@ var upload = multer({ storage: storage });
 
 //Profile
 router.get('/home', ensureAuthenticated, function(req, res){
+	req.session.user = req.user.email;
 	res.render('agency/home');
 });
 
 function ensureAuthenticated(req, res, next){
-	if(req.isAuthenticated()){
+	if(req.isAuthenticated() && req.user.role == 'agency'){
 		return next();
 	} else {
 		req.flash('error_msg','You are not logged in');
-		res.redirect('/agency/login');
+		res.redirect('/login');
 	}
 }
 
@@ -148,7 +149,7 @@ passport.use('local-agency', new LocalStrategy({
 
 router.post('/register',
     passport.authenticate('local-agency', {
-        successRedirect:'/agency/login', 
+        successRedirect:'/login', 
         failureRedirect:'/agency/register', 
         badRequestMessage:'Invalid Registration', 
         failureFlash: true
@@ -164,65 +165,11 @@ router.get('/verifyemail/:code' , function(req, res){
 		}else {
 			connection.query("update users set verification = 1 where id = " + rows[0].id ,function(err, rows) {
 				req.flash('success_msg', 'Email verified!'); // req.flash is the way to set flashdata using connect-flash
-				res.redirect('/agency/login');
+				res.redirect('/login');
 			});
 		}
 	});
 });
-
-//Login
-router.get('/login', function(req, res){
-	res.render('agency/login');
-});
-
-passport.serializeUser(function(user, done) {
-	done(null, user.id);
-	});
-
-passport.deserializeUser(function(id, done) {
-	connection.query("SELECT * FROM users WHERE id = " + id, function(err, rows){
-		done(err, rows[0]);
-	})
-});
-
-passport.use('local-login-agency', new LocalStrategy({
-		usernameField: 'email',
-		passwordField: 'password',
-		passReqToCallback: true
-	},
-	function(req, email, password, done) {
-		connection.query("SELECT * FROM users WHERE email = ?",[email], function(err, rows){
-			if (err)
-				return done(err);
-			if (!rows.length) {
-				//req.flash('error_msg', 'Invalid email!');
-				return done(null, false, {message: ''}); // req.flash is the way to set flashdata using connect-flash
-			}
-
-			// if the user is found but the password is wrong
-			if (!bcrypt.compareSync(password, rows[0].password))
-				//req.flash('error_msg', 'Invalid password!');
-				return done(null, false, {message: ''}); // create the loginMessage and save it to session as flashdata
-
-			// if the user is found but the password is wrong
-			if (!rows[0].active)
-				//req.flash('error_msg', 'User not yet confirmed!');
-				return done(null, false, {message: ''});
-
-			// all is well, return successful user
-			req.session.user = rows[0].email;
-			return done(null, rows[0]);
-		});
-	}
-));
-
-router.post('/login',
-	passport.authenticate('local-login-agency', {
-		successRedirect:'/agency/home', 
-		failureRedirect:'/agency/login', 
-		badRequestMessage:'Please enter email and password' , 
-		failureFlash: true
-}));
 
 //Logout
 router.get('/logout', function(req, res){
@@ -230,7 +177,7 @@ router.get('/logout', function(req, res){
 
 	req.flash('success_msg', 'You are logged out');
 	req.session.destroy();
-	res.redirect('/agency/login');
+	res.redirect('/login');
 });
 
 //View Agency
