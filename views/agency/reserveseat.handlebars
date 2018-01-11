@@ -7,13 +7,17 @@
     <form method="post" action="#">
   {{/print}}
     <div class="row">
+      <div class="col-1"></div>
       <div class="col-3 reserveseatdiv">
         <div class="row">
           {{#print1}}
-          <div seatbutton class="col-3">
+          {{#is (modulo number 4) '3'}}
+            <div class="col-1"></div>
+          {{/is}}
+          <div class="seat"  class="col-2">
             {{#is status '0'}}
               <input type="hidden" id="inputseat{{number}}" name="seatnumber" value="">
-              <div class="btn seat btn-success" id="buttonseat{{number}}" href="" role="button">{{number}}</div>
+              <div class="btn seat btn-success busstyle{{number}} busstyle" id="buttonseat{{number}}" href="" role="button">{{number}}</div>
             {{/is}}
             {{#is status '1'}}
               <div class="btn seat disabled btn-warning" href="" role="button">{{number}}</div>
@@ -22,27 +26,33 @@
               <div class="btn seat disabled btn-danger" href="" role="button">{{number}}</div>
             {{/is}}
           </div>
+          {{#is (modulo number 4) '2'}}
+            <div class="col-1"></div>
+          {{/is}}
+          {{#is (modulo number 4) '4'}}
+            <div class="col-2"></div>
+          {{/is}}
           {{/print1}}
         </div>
       </div>
-      <div class="col-4" style="padding: 2%;">
-          <button disabled type="submit" style="margin: 0% 0% 10% 25%;" class="btn btn-default"><i class="fa fa-times" aria-hidden="true"></i> Reserve</button>
+      <div class="col-3 colorinfo" style="padding: 2%;">
           <div class="row"><div style="margin: 0% 0% 3% 20%; border-radius: 5px; width: 40px; height:40px; background-color: rgb(159, 247, 159);"></div><p style="margin-left: 20px;">Selected</p></div> 
           <div class="row"><div style="margin: 0% 0% 3% 20%; border-radius: 5px; width: 40px; height:40px; background-color: #4d9e4d;"></div><p style="margin-left: 20px;">Available</p></div>  
           <div class="row"><div style="margin: 0% 0% 3% 20%; border-radius: 5px; width: 40px; height:40px; background-color: #d9b44f;"></div><p style="margin-left: 20px;">Booked</p></div>  
           <div class="row"><div style="margin-left: 20%; border-radius: 5px; width: 40px; height:40px; background-color: #d9534f;"></div><p style="margin-left: 20px;">Reserved</p></div>
       </div>
    {{#print}}
-      <div class="col-5">
-            <h6 style="margin-top: 10%;">Bus Details </h6><br>
+      <div class="col-3 colorinfo">
+            <h6 style="margin-top: 5%;">Bus Details </h6><br>
             <p>Bus name: {{busname}}</p>
             <p>Registration number: {{registrationnumber}}</p>
             <p>Category: {{category}}</p>
             <p>Agency: {{agencyname}}</p>
+      <button disabled type="submit" style="margin: 5% 0% 10% 15%;" class="btn btn-info"><i class="fa fa-lock" aria-hidden="true"></i> Reserve</button>
       </div>
+      <div class="col-2"></div>
   {{/print}}
     </div>
-      
     </form>
 </div>
 </div>

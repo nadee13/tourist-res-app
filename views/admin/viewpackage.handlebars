@@ -5,8 +5,8 @@
   <h2 class="headertext">Package Details</h2>
     {{#print}}
     <div class="row">
-      <div class="col">
-          <img src="/uploads/{{image}}">
+      <div class="col viewpackageimagediv">
+          <img class="viewpackageimage" src="/uploads/{{image}}">
       </div>
       <div class="col">
         <h4>{{name}}</h4>
@@ -31,7 +31,7 @@
         </div>
         <div id="custcostrow" class="row">
           <div class="col-6">
-            <p><b>Cost: </b>$ {{cost}}</p>
+            <p><b>Cost: </b>Rs. {{cost}}</p>
           </div>
         </div>
         <div id="custcostrow" class="row">

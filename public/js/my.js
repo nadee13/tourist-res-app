@@ -51,7 +51,7 @@ $(document).ready(function(){
 
     });
 
-    $('.seat').click(function() {
+      $('.seat').click(function() {
         var number = $(this).text();
         var inputid = '#inputseat' + number;
         var inputvalue = $(inputid).val();
@@ -63,6 +63,7 @@ $(document).ready(function(){
           $(this).removeClass('activated')
         }
       });
+
 
             $('#us2').locationpicker({
                 enableAutocomplete: true,

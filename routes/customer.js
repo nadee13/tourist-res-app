@@ -303,6 +303,9 @@ router.post('/package/:packageid/reserveseat', ensureAuthenticated, function(req
 							connection.query("insert into reservations (seatid, customerid, packageid, confirm) values (?,?,?,?)", [seatid, customerid, packageid, 0], function (err4, rows4){
 								if(err4){
 									throw err4;
+								}else{
+									req.flash('success_msg', 'Successfully reserved.');
+									res.redirect('/customer/reservation');
 								}
 							});
 						});
@@ -310,8 +313,8 @@ router.post('/package/:packageid/reserveseat', ensureAuthenticated, function(req
 				});
 			}
 			//res.render('customer/reserveseat', obj);
-			req.flash('success_msg', 'Successfully reserved.');
-			res.redirect('/customer/package/'+ packageid + '/reserveseat');
+			req.flash('error_msg', 'No seat selected.');
+			res.redirect('/customer/package/' + packageid + '/reserveseat');
 		}
 	});
 });

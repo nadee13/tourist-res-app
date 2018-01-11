@@ -4,10 +4,20 @@ Space out content a bit
   background-color: red;
 }
 
-/* img {
+.navbar-brand{
+  font: 25px;
+  font-weight: bold;
+}
+
+.viewpackageimagediv{
+  height: 350px !important;
+  border-radius: 15px;
+}
+
+.viewpackageimage {
   max-width: 100%;
   max-height: 100%;
-} */
+} 
 
 .activated{
   color: black;
@@ -16,7 +26,7 @@ Space out content a bit
 
 .reserveseatdiv{
   margin-bottom: 15%;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.8);
   box-shadow: 2px 2px 2px #c5c5c5, -1px -1px #c5c5c5;
 }
 
@@ -201,6 +211,12 @@ h2{
   .jumbotron {
     border-bottom: 0;
   }
+}
+
+.colorinfo{
+  background: rgba(236, 236, 236, 0.7);
+  height: 300px !important;
+  width: 300px !important;
 }
 
 a, a:hover {
