@@ -45,17 +45,17 @@ passport.use('local-login', new LocalStrategy({
 			if (err)
 				return done(err);
 			if (!rows.length) {
-				//req.flash('error_msg', 'Invalid email!');
+				req.flash('error_msg', 'Invalid email!');
 				return done(null, false, {message: '0'}); // req.flash is the way to set flashdata using connect-flash
 			}
 			// if the user is found but the password is wrong
 			if (!bcrypt.compareSync(password, rows[0].password))
-				//req.flash('error_msg', 'Invalid password!');
+				req.flash('error_msg', 'Invalid password!');
 				return done(null, false, {message: '1'}); // create the loginMessage and save it to session as flashdata
 
 			// if the user is found but the password is wrong
 			if (!rows[0].active)
-			//req.flash('error_msg', 'User not yet confirmed!');
+			req.flash('error_msg', 'User not yet confirmed!');
 				return done(null, false, {message: '2'});
 
 			// all is well, return successful user

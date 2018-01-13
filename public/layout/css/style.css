@@ -6,14 +6,20 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 --*/
 .custLogCont,  .custRegCont, .custPackCont{
    background-image: url("/layout/images/authenticate.jpg");
-   background-repeat: no-repeat;
+   /* background-repeat: no-repeat; */
+   background-attachment:fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
    min-height: 750px;
  }
 
  .cont{
     margin-top: -6%;
     background-image: url("/layout/images/background.jpg");
+    /* background-repeat: no-repeat; */
+    background-attachment:fixed;
     background-repeat: no-repeat;
+    background-size: cover;
     min-height: 900px;
     padding-bottom: 10%; 
 }
@@ -39,14 +45,14 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
   .addpackForm{
     margin-top: 20%;
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.8);
     padding: 0% 20% 5% 20%;
     border-radius: 10px;
     margin-bottom: 8%;
   }
 
   .fadedback{
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.8);
     padding: 5% 20% 5% 20%;
     border-radius: 10px;
   }
@@ -165,6 +171,9 @@ div#bs-example-navbar-collapse-1 {
 .aboutus{
     padding: 5% 0%;
     background-image: url("/layout/images/homebackground.jpg");
+    background-attachment:fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .aboutustext{

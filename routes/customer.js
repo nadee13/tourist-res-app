@@ -273,8 +273,9 @@ router.post('/package/:packageid/reserveseat', ensureAuthenticated, function(req
 	var selectedseats = seatnumbers.filter(seat => seat != "");
 	var customerid;
 	var seatid;
-	var busid
+	var busid;
 	var packageid = req.params.packageid;
+	console.log('selected seats')
 	connection.query("select customers.id from customers inner join users on customers.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
 		customerid = result[0].id;
 		if(err){
@@ -304,17 +305,13 @@ router.post('/package/:packageid/reserveseat', ensureAuthenticated, function(req
 								if(err4){
 									throw err4;
 								}else{
-									req.flash('success_msg', 'Successfully reserved.');
-									res.redirect('/customer/reservation');
 								}
 							});
 						});
 					}
 				});
 			}
-			//res.render('customer/reserveseat', obj);
-			req.flash('error_msg', 'No seat selected.');
-			res.redirect('/customer/package/' + packageid + '/reserveseat');
+			res.redirect('/customer/reservation');
 		}
 	});
 });

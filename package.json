@@ -26,6 +26,7 @@
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
     "express-validator": "^4.3.0",
+    "fluentreports": "^1.1.4",
     "googlemaps": "^1.12.0",
     "handlebars": "^4.0.11",
     "handlebars-helpers": "^0.10.0",

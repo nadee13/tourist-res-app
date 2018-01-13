@@ -257,6 +257,7 @@ router.post('/bus/add', ensureAuthenticated, function(req, res) {
 				var insertBusQuery = "insert into buses (name, registrationnumber, category, numberofseats, availability, agencyid) values (?,?,?,?,?,?)";
 				connection.query(insertBusQuery, [name, registrationnumber, category, numberofseats, availability, agencyid], function(err, rows){
 					//insertBusQuery.id = rows.insertId;
+					console.log('add bus rows: ' + JSON.stringify(rows));
 					busid = rows.insertId;
 					if (err)
 						throw err;
@@ -493,7 +494,7 @@ router.post('/package/:packageid/save',  upload.single('image'), ensureAuthentic
 					throw err;
 				} else {
 					req.flash('success_msg', 'Successfully added.');
-					res.redirect('/agency/package/' + req.params.packageid);
+					res.redirect('/agency/package');
 				}
 			});
 		} else {
@@ -504,7 +505,7 @@ router.post('/package/:packageid/save',  upload.single('image'), ensureAuthentic
 					throw err;
 				} else {
 					req.flash('success_msg', 'Successfully added.');
-					res.redirect('/agency/package/' + req.params.packageid);
+					res.redirect('/agency/package');
 				}
 			});
 		}

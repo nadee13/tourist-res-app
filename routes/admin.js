@@ -4,6 +4,8 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
+var Report = require('fluentReports' ).Report;
+var fs = require('fs');
 
 var connection = mysql.createConnection({
     host     : 'localhost',
@@ -535,7 +537,161 @@ router.get('/reservation/:reservationid/cancel', ensureAuthenticated, function(r
 			});
 		}
 	});
-	
+});
+
+router.get('/testreport', ensureAuthenticated, function(req, res){
+	var data = [
+		{item: 'Bread1', count: 5, unit: 'loaf'},
+		{item: 'Egg', count: 3, unit: 'dozen'},
+		{item: 'Sugar', count: 32, unit: 'gram'},
+		{item: 'Carrot', count: 2, unit: 'kilo'},
+		{item: 'Apple', count: 3, unit: 'kilo'},
+		{item: 'Peanut Butter', count: 1, unit: 'jar'}
+	];
+
+  var headerFunction = function(Report) {
+	  Report.print("My Grocery List", {fontSize: 22, bold: true, underline:true, align: "center"});
+	  Report.newLine(2);
+  };
+
+  var footerFunction = function(Report) {
+	  Report.line(Report.currentX(), Report.maxY()-18, Report.maxX(), Report.maxY()-18);
+	  Report.pageNumber({text: "Page {0} of {1}", footer: true, align: "right"});
+	  Report.print("Printed: "+(new Date().toLocaleDateString()), {y: Report.maxY()-14, align: "left"});
+  };
+
+  var rpt = new Report("./files/grocery2.pdf")
+	  .margins(20)                                 // Change the Margins to 20 pixels
+	  .data(data)									 // Add our Data
+	  .pageHeader(headerFunction)    		         // Add a header
+	  .pageFooter(footerFunction)                  // Add a footer
+	  .detail("{{count}} {{unit}} of {{item}}")    // Put how we want to print out the data line.
+	  .render();  
+});
+
+router.get('/accounts/generatecustomerreport', ensureAuthenticated, function(req, res){
+	var data;
+	connection.query("select customers.firstname, customers.lastname, users.email" +  
+	                 " from users inner join customers on users.id = customers.userid where users.role = 'customer';", function(err, result){
+		if(err){
+			throw err;
+		} else {
+			mydata = console.log(JSON.stringify(result));
+			var contactInfo = function(rpt, data) {
+				rpt.print([
+				  'The Traveller\' Guide',
+				  '34/5, Barnes Place',
+				  'Colombo 7',
+				  'Sri Lanka'
+				], {x:80});
+			  };
+			  			
+			  var header = function(rpt, data) {
+				if(!data.email) {return;}
+				rpt.fontSize(12);
+				rpt.print(new Date().toString('MM/dd/yyyy')); //, {y: 30, align: 'right'});
+			
+				// Report Title
+				rpt.print('Customer Details Report', {fontBold: true, fontSize: 16, align: 'right'});
+			
+			  // Contact Info
+			  contactInfo(rpt, data);
+			
+			  rpt.newline();
+			  rpt.newline();
+			  rpt.newline();
+									
+			  // Detail Header
+			  rpt.fontBold();
+			  rpt.band([
+				{data: 'First Name', width: 60},
+				{data: 'Last Name', width: 60},
+				{data: 'Email', width: 60}
+			  ]);
+			  rpt.fontNormal();
+			  rpt.bandLine();
+			};
+			
+			  var detail = function(rpt, data) {
+			  // Detail Body
+				rpt.band([
+				 {data: data.firstname, width: 60, align: 1},
+				 {data: data.lastname, width: 60},
+				 {data: data.email, width: 60}
+				], {border: 1, width: 0});
+			};
+			
+							
+			  // Optional -- If you don't pass a report name, it will default to "report.pdf"
+			  var rptName =  "./files/customerdetailsreport.pdf";
+			 
+			  var resultReport = new Report(rptName).data(mydata);
+			
+				// You can Chain these directly after the above like I did or as I have shown below; use the resultReport variable and continue chain the report commands off of it.  Your choice.
+				  
+			  // Settings
+			  resultReport
+				.fontsize(12)
+				.margins(40)
+				.detail(detail)
+				  .header(header, {pageBreakBefore: true})
+			  ;
+			
+			  // Hey, everyone needs to debug things occasionally -- creates debug output so that you can see how the report is built.
+			  resultReport.printStructure();
+			
+			
+			  console.time("Rendered");
+			  resultReport.render(function(err, name) {
+				  console.timeEnd("Rendered");
+			  });
+			
+		}
+		setInterval(function() {
+			var file = "./files/customerdetailsreport.pdf";
+			res.download(file);
+		},2000);
+	});
+});
+
+router.get('/testreport', ensureAuthenticated, function(req, res){
+	var data = [
+		{item: 'Bread', count: 5, unit: 'loaf'},
+		{item: 'Egg', count: 3, unit: 'dozen'},
+		{item: 'Sugar', count: 32, unit: 'gram'},
+		{item: 'Carrot', count: 2, unit: 'kilo'},
+		{item: 'Apple', count: 3, unit: 'kilo'},
+		{item: 'Peanut Butter', count: 1, unit: 'jar'}
+	];
+
+  var headerFunction = function(Report) {
+	  Report.print("My Grocery List", {fontSize: 22, bold: true, underline:true, align: "center"});
+	  Report.newLine(2);
+  };
+
+  var footerFunction = function(Report) {
+	  Report.line(Report.currentX(), Report.maxY()-18, Report.maxX(), Report.maxY()-18);
+	  Report.pageNumber({text: "Page {0} of {1}", footer: true, align: "right"});
+	  Report.print("Printed: "+(new Date().toLocaleDateString()), {y: Report.maxY()-14, align: "left"});
+  };
+
+  var rpt = new Report("./files/grocery2.pdf")
+	  .margins(20)                                 // Change the Margins to 20 pixels
+	  .data(data)									 // Add our Data
+	  .pageHeader(headerFunction)    		         // Add a header
+	  .pageFooter(footerFunction)                  // Add a footer
+	  .detail("{{count}} {{unit}} of {{item}}")    // Put how we want to print out the data line.
+	  .render();
+});
+
+router.get('/grocery2', ensureAuthenticated, function(req, res){
+	var filePath = "./files/grocery2.pdf";
+	console.log(filePath);
+
+    fs.readFile(filePath , function (err,data){
+        res.contentType("application/pdf");
+        res.send(data);
+    });
 });
 
 module.exports = router;

@@ -89,7 +89,7 @@ $(document).ready(function(){
                 console.log('Latitude' + lat);
             }   
 
-            $('#viewus2').locationpicker({
+            $('#viewus2').locationpicker1({
                 enableAutocomplete: false,
                 enableReverseGeocode: false,
                 radius: 0,
