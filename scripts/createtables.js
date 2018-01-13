@@ -126,18 +126,6 @@ connection.connect(function(err) {
       on delete cascade
     )`;
 
-    var createMarkers = `create table if not exists markers(
-      id int primary key auto_increment,
-      name varchar(255) not null,
-      address varchar(255) not null,
-      lat FLOAT( 10, 6 ) not null,
-      lng FLOAT( 10, 6 ) not null,
-      packageid int not null,
-      foreign key (packageid)
-      references packages (id)
-      on delete cascade
-    )`;
-
     var createProcedureGetCustomers = `CREATE PROCEDURE getallcustomers()
         BEGIN
         SELECT *  FROM customers;
@@ -156,8 +144,6 @@ connection.connect(function(err) {
         end loop simple_loop;
         end
     `;
-
-    
 
   connection.query(createUser, function(err, result) {
     if (err) {
