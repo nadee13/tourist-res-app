@@ -6,7 +6,7 @@
   <h2 class="headertext">{{packagename}}</h2>
     <form method="post" action="#">
   {{/print}}
-    <div class="row">
+    <div class="row reserveseatrow">
       <div class="col-1"></div>
       <div class="col-3 reserveseatdiv">
         <div class="row">
@@ -40,17 +40,18 @@
           <div class="row"><div style="margin: 0% 0% 3% 20%; border-radius: 5px; width: 40px; height:40px; background-color: #4d9e4d;"></div><p style="margin-left: 20px;">Available</p></div>  
           <div class="row"><div style="margin: 0% 0% 3% 20%; border-radius: 5px; width: 40px; height:40px; background-color: #d9b44f;"></div><p style="margin-left: 20px;">Booked</p></div>  
           <div class="row"><div style="margin-left: 20%; border-radius: 5px; width: 40px; height:40px; background-color: #d9534f;"></div><p style="margin-left: 20px;">Reserved</p></div>
+          
       </div>
    {{#print}}
-      <div class="col-3 colorinfo">
+      <div class="col-4 colorinfo">
             <h6 style="margin-top: 5%;">Bus Details </h6><br>
             <p>Bus name: {{busname}}</p>
             <p>Registration number: {{registrationnumber}}</p>
             <p>Category: {{category}}</p>
             <p>Agency: {{agencyname}}</p>
-      <button disabled type="submit" style="margin: 5% 0% 10% 15%;" class="btn btn-info"><i class="fa fa-lock" aria-hidden="true"></i> Reserve</button>
+      <button disabled type="submit" style="margin: 5% 0% 10% 50%;" class="btn btn-info"><i class="fa fa-lock" aria-hidden="true"></i> Reserve</button>
       </div>
-      <div class="col-2"></div>
+      <div class="col-1"></div>
   {{/print}}
     </div>
     </form>

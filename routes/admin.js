@@ -10,7 +10,7 @@ var fs = require('fs');
 var connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
-    password : 'admin'
+    password : 'root'
   });
 
 connection.query('USE touristappdatabase');
@@ -175,7 +175,7 @@ router.get('/mydetails', ensureAuthenticated, function(req, res){
 	connection.query("select users.id, admins.name, users.email," 
 			+ " users.streetnumber, users.streetname, users.city, users.phonenumber " 
 			+ "from users inner join admins where" 
-			+ " users.id = admins.userid && users.id = 4" , function(err, result){
+			+ " users.id = admins.userid && users.email = ?", [req.session.user], function(err, result){
 		if(err){
 			throw err;
 		} else {
@@ -194,8 +194,8 @@ router.get('/mydetails/save', function(req, res){
 router.post('/mydetails/save',
 	function(req, res) {
 		connection.query("update users set phonenumber = ? , streetnumber = ? , streetname = ? , city = ? " 
-						+ "where users.id = 4", [req.body.phonenumber, req.body.streetnumber,
-							req.body.streetname, req.body.city], function(err, rows){
+						+ "where users.email = ?", [req.body.phonenumber, req.body.streetnumber,
+							req.body.streetname, req.body.city, req.session.user], function(err, rows){
 			if (err)
 				throw err;
 			else {

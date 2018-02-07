@@ -8,15 +8,15 @@ let mysql = require('mysql');
 let connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'admin',
+    password: 'root',
     database: 'touristAppDatabase'
 });
 
 connection.connect(function(err) {
     if (err) {
-      return //console.error('error: ' + err.message);
+      return console.error('error: ' + err.message);
     }
-    //console.log('Connected to the MySQL server.');
+    console.log('Connected to the MySQL server.');
 
     var createUser = `create table if not exists users(
       id int primary key auto_increment,
@@ -147,44 +147,44 @@ connection.connect(function(err) {
 
   connection.query(createUser, function(err, result) {
     if (err) {
-      //console.log(err.message);
+      console.log(err.message);
     }
-    //console.log("User table created");
+    console.log("User table created");
   });
 
   connection.query(createCustomer, function(err, result) {
     if (err) {
-      //console.log(err.message);
+      console.log(err.message);
     }
-    //console.log("Customer table created");
+    console.log("Customer table created");
   });
 
   connection.query(createAgency, function(err, result) {
     if (err) {
-      //console.log(err.message);
+      console.log(err.message);
     }
-    //console.log("Agency table created");
+    console.log("Agency table created");
   });
 
   connection.query(createAdmin, function(err, result) {
     if (err) {
-      //console.log(err.message);
+      console.log(err.message);
     }
-    //console.log("Admin table created");
+    console.log("Admin table created");
   });
 
   connection.query(createBus, function(err, result) {
     if (err) {
-      //console.log(err.message);
+      console.log(err.message);
     }
-    //console.log("Bus table created");
+    console.log("Bus table created");
   });
 
   connection.query(createPackage, function(err, result) {
     if (err) {
-     // console.log(err.message);
+     console.log(err.message);
     }
-   // console.log("Package table created");
+   console.log("Package table created");
   });
 
   connection.query(createSeat, function(err, result) {
@@ -201,12 +201,12 @@ connection.connect(function(err) {
     console.log("Reservation table created");
   });
 
-  connection.query(createMarkers, function(err, result) {
-    if (err) {
-      console.log(err.message);
-    }
-    console.log("Marker table created");
-  });
+  // connection.query(createMarkers, function(err, result) {
+  //   if (err) {
+  //     console.log(err.message);
+  //   }
+  //   console.log("Marker table created");
+  // });
 
   connection.query(createProcedureEnterSeats, function(err, result) {
     if (err) {
@@ -219,8 +219,8 @@ connection.connect(function(err) {
 
   // connection.end(function(err) {
   //   if (err) {
-  //     return //console.log('error:' + err.message);
+  //     return console.log('error:' + err.message);
   //   }
-  //   //console.log('Close the database connection.');
+  //   console.log('Close the database connection.');
   // });
 

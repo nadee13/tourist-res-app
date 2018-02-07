@@ -13,7 +13,7 @@ var mime = require('mime');
 var connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
-    password : 'admin'
+    password : 'root'
 });
 connection.query('USE touristappdatabase');
 

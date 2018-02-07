@@ -9,7 +9,7 @@ var bcrypt = require('bcrypt-nodejs');
 var connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
-    password : 'admin'
+    password : 'root'
   });
 
 connection.query('USE touristappdatabase');
@@ -41,7 +41,7 @@ passport.use('local-login', new LocalStrategy({
 	},
 	function(req, email, password, done) {
 		connection.query("SELECT * FROM users WHERE email = ?",[email], function(err, rows){
-			////console.log('rows: ' + rows);
+			console.log('rows: ' + JSON.stringify(rows));
 			if (err)
 				return done(err);
 			if (!rows.length) {
@@ -49,15 +49,15 @@ passport.use('local-login', new LocalStrategy({
 				return done(null, false, {message: '0'}); // req.flash is the way to set flashdata using connect-flash
 			}
 			// if the user is found but the password is wrong
-			if (!bcrypt.compareSync(password, rows[0].password))
+			if (!bcrypt.compareSync(password, rows[0].password)) {
 				req.flash('error_msg', 'Invalid password!');
 				return done(null, false, {message: '1'}); // create the loginMessage and save it to session as flashdata
-
+			}
 			// if the user is found but the password is wrong
-			if (!rows[0].active)
+			if (!rows[0].active) {
 			req.flash('error_msg', 'User not yet confirmed!');
 				return done(null, false, {message: '2'});
-
+			}
 			// all is well, return successful user
 			return done(null, rows[0]);
 		});

@@ -9,7 +9,7 @@ var random = require("random-js")();
 var connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
-    password : 'admin'
+    password : 'root'
   });
 
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";

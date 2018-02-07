@@ -164,7 +164,7 @@
     }
 
     function getContextForElement(domObj) {
-        return $(domObj).data("locationpicker");
+        return $(domObj).data("locationpicker1");
     }
 
     function updateInputValues(inputBinding, gmapContext){
@@ -270,7 +270,7 @@
     }
 
     function updateMap(gmapContext, $target, options) {
-        var settings = $.extend({}, $.fn.locationpicker.defaults, options ),
+        var settings = $.extend({}, $.fn.locationpicker1.defaults, options ),
             latNew = settings.location.latitude,
             lngNew = settings.location.longitude,
             radiusNew = settings.radius,
@@ -292,12 +292,12 @@
     }
     /**
      * Initializeialization:
-     *  $("#myMap").locationpicker(options);
+     *  $("#myMap").locationpicker1(options);
      * @param options
      * @param params
      * @returns {*}
      */
-    $.fn.locationpicker = function( options, params ) {
+    $.fn.locationpicker1 = function( options, params ) {
         if (typeof options == 'string') { // Command provided
             var _targetDomElement = this.get(0);
             // Plug-in is not applied - nothing to do.
@@ -333,7 +333,7 @@
                         var event = params.event;
                         var callback = params.callback;
                         if (!event || ! callback) {
-                            console.error("LocationPicker: Invalid arguments for method \"subscribe\"")
+                            console.error("locationpicker1: Invalid arguments for method \"subscribe\"")
                             return null;
                         }
                         google.maps.event.addListener(gmapContext.map, event, callback);
@@ -374,7 +374,7 @@
             }
             // Plug-in initialization is required
             // Defaults
-            var settings = $.extend({}, $.fn.locationpicker.defaults, options );
+            var settings = $.extend({}, $.fn.locationpicker1.defaults, options );
             // Initialize
             var gmapContext = new GMapContext(this, $.extend({}, {
                 zoom: settings.zoom,
@@ -395,7 +395,7 @@
                 markerDraggable: settings.markerDraggable,
                 markerVisible: settings.markerVisible
             },  settings.mapOptions));
-            $target.data("locationpicker", gmapContext);
+            $target.data("locationpicker1", gmapContext);
             // Subscribe GMap events
             function displayMarkerWithSelectedArea() {
                 GmUtility.setPosition(gmapContext, gmapContext.marker.position, function (context) {
@@ -431,7 +431,7 @@
             });
         });
     };
-    $.fn.locationpicker.defaults = {
+    $.fn.locationpicker1.defaults = {
         location: {latitude: 40.7324319, longitude: -73.82480777777776},
         locationName: "",
         radius: 500,
