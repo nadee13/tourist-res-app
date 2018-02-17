@@ -6,6 +6,7 @@ var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
 var nodemailer = require('nodemailer');
 var random = require("random-js")();
+//var async = require('async');
 var connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
@@ -127,9 +128,9 @@ passport.use('local-customer', new LocalStrategy({
 						transporter.sendMail(mailOptions, function(error, info){
 							if(error){
 								return(error);
-								//return console.log(error);
+								//return //console.log(error);
 							}
-							//console.log('Message sent: ' + info.response);
+							////console.log('Message sent: ' + info.response);
 						});
 
 					});
@@ -226,19 +227,19 @@ router.get('/package', ensureAuthenticated, function(req, res){
 router.get('/package/:packageid', ensureAuthenticated, function(req, res){
 	connection.query("select packages.*, buses.name as busname from packages inner join buses on packages.busid = buses.id"
 					+ " where packages.id = " + req.params.packageid, function (err, result){
-						console.log('result: ' + JSON.stringify(result));
+						//console.log('result: ' + JSON.stringify(result));
 						var agencyid = result[0].agencyid;
 		if(err){
 			throw err;
 		} else {
 			var obj = {};
-			//console.log('obj: ' + JSON.stringify(obj));
+			////console.log('obj: ' + JSON.stringify(obj));
 			connection.query("select agencies.name as agencyname from agencies where agencies.id = " + agencyid, function (err1, result1){
 				if(err1){
 					throw err1;
 				} else {
 					obj = {print: result, print1: result1};
-					//console.log('obj: ' + JSON.stringify(obj));
+					////console.log('obj: ' + JSON.stringify(obj));
 					res.render('customer/viewpackage', obj);
 				}
 			});
@@ -248,18 +249,18 @@ router.get('/package/:packageid', ensureAuthenticated, function(req, res){
 
 router.get('/package/:packageid/reserveseat', ensureAuthenticated, function(req, res){
 	connection.query("select packages.id as packageid, packages.name as packagename, buses.name as busname, buses.*, agencies.name as agencyname, agencies.* from packages inner join buses on packages.busid = buses.id inner join agencies on agencies.id = packages.agencyid where packages.id = " + req.params.packageid, function (err, result){
-						console.log('result: ' + JSON.stringify(result));
+						//console.log('result: ' + JSON.stringify(result));
 		if(err){
 			throw err;
 		} else {
 			var obj = {};
-			//console.log('obj: ' + JSON.stringify(obj));
+			////console.log('obj: ' + JSON.stringify(obj));
 			connection.query("select seats.* from seats where packageid = " + req.params.packageid, function (err1, result1){
 				if(err1){
 					throw err1;
 				} else {
 					obj = {print: result, print1: result1};
-					console.log('seatsobj: ' + JSON.stringify(obj));
+					//console.log('seatsobj: ' + JSON.stringify(obj));
 					res.render('customer/reserveseat', obj);
 				}
 			});
@@ -268,14 +269,18 @@ router.get('/package/:packageid/reserveseat', ensureAuthenticated, function(req,
 });
 
 router.post('/package/:packageid/reserveseat', ensureAuthenticated, function(req, res){
-	//console.log('req.body: ' + JSON.stringify(req.body));
+	////console.log('req.body: ' + JSON.stringify(req.body));
 	var seatnumbers = req.body.seatnumber;
 	var selectedseats = seatnumbers.filter(seat => seat != "");
 	var customerid;
 	var seatid;
 	var busid;
 	var packageid = req.params.packageid;
-	console.log('selected seats')
+	if(selectedseats.length == 0){
+		req.flash('error_msg', 'No seats selected');
+		res.redirect('/customer/package/'+packageid+'/reserveseat');
+		return;
+	}
 	connection.query("select customers.id from customers inner join users on customers.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
 		customerid = result[0].id;
 		if(err){
@@ -283,35 +288,41 @@ router.post('/package/:packageid/reserveseat', ensureAuthenticated, function(req
 		}
 	});
 	connection.query("select busid from packages where packages.id = " + packageid , function (err1, result1){
-						//console.log('result: ' + JSON.stringify(result));
+						////console.log('result: ' + JSON.stringify(result));
 		busid = result1[0].busid;
 		if(err1){
 			throw err1;
 		} else {
 			for (var i = 0; i < selectedseats.length; i++){
-				var seat = selectedseats[i];
-				connection.query("update seats set status = 1 where busid = ? && number = ?",  [busid, seat], function (err2, rows2){
-					console.log('seatid: ' + seatid);
-					console.log('rows2: ' + JSON.stringify(rows2));
-					if(err2){
-						throw err2;
-					}else{
-						connection.query("select seats.id as seatid from seats where seats.number = ? && seats.busid = ?", [seat, busid], function (err3, result3){
-							console.log('result3: ' + JSON.stringify(result3));
-							console.log('result3[0]: ' + JSON.stringify(result3[0]));
-							seatid = result3[0].seatid;
-							console.log('seatid: ' + seatid);
-							connection.query("insert into reservations (seatid, customerid, packageid, confirm) values (?,?,?,?)", [seatid, customerid, packageid, 0], function (err4, rows4){
-								if(err4){
-									throw err4;
-								}else{
-								}
-							});
+				(function(i) {
+					setTimeout(function() { 
+						var seat = selectedseats[i];
+						connection.query("update seats set status = 1 where busid = ? && number = ?",  [busid, seat], function (err2, rows2){
+							//console.log('seat: ' + seat);
+							//console.log('rows2: ' + JSON.stringify(rows2));
+							if(err2){
+								throw err2;
+							}else{
+								connection.query("select seats.id as seatid from seats where seats.number = ? && seats.busid = ?", [seat, busid], function (err3, result3){
+									//console.log('result3: ' + JSON.stringify(result3));
+									//console.log('result3[0]: ' + JSON.stringify(result3[0]));
+									seatid = result3[0].seatid;
+									//console.log('seatid: ' + seatid);
+									connection.query("insert into reservations (seatid, customerid, packageid, confirm) values (?,?,?,?)", [seatid, customerid, packageid, 0], function (err4, rows4){
+										if(err4){
+											throw err4;
+										}else{
+										}
+									});
+								});
+							}
 						});
-					}
-				});
+					}, 100 * i);
+				})(i);
 			}
-			res.redirect('/customer/reservation');
+			setTimeout(function() { 
+				res.redirect('/customer/reservation');
+			}, 1000);
 		}
 	});
 });
@@ -321,7 +332,7 @@ router.get('/reservation', ensureAuthenticated, function(req, res){
 	var customerid;
 	connection.query("select customers.id as customerid from customers inner join users on customers.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
 		customerid = result[0].customerid;
-		console.log('customerid: ' + customerid);
+		//console.log('customerid: ' + customerid);
 		if(err){
 			throw err;
 		} else {
@@ -334,7 +345,7 @@ router.get('/reservation', ensureAuthenticated, function(req, res){
 				} else {
 					var obj = {};
 					obj = {print: result};
-					console.log('obj: ' + JSON.stringify(obj));
+					//console.log('obj: ' + JSON.stringify(obj));
 					res.render('customer/viewreservations', obj);
 				}
 			});
@@ -372,7 +383,7 @@ router.get('/reservation/:reservationid/cancel', ensureAuthenticated, function(r
 router.get('/reservation/:reservationid/confirm', ensureAuthenticated, function(req, res){
 	var reservationid = req.params.reservationid;
 	var ticketnumber = (reservationid * 5425) + 237;
-	console.log('ticketnumber: ' +  ticketnumber);
+	//console.log('ticketnumber: ' +  ticketnumber);
 	var seatid;
 	connection.query("select seatid from reservations where reservations.id = " + req.params.reservationid, function (err, result){
 		seatid = result[0].seatid;
@@ -425,7 +436,7 @@ router.post('/reservation/search', ensureAuthenticated, function(req, res){
 	var customerid;
 	connection.query("select customers.id as customerid from customers inner join users on customers.userid = users.id where users.email = '" + req.session.user + "'" , function (err, result){
 		customerid = result[0].customerid;
-		console.log('customerid: ' + customerid);
+		//console.log('customerid: ' + customerid);
 		if(err){
 			throw err;
 		} else {
@@ -438,7 +449,7 @@ router.post('/reservation/search', ensureAuthenticated, function(req, res){
 				} else {
 					var obj = {};
 					obj = {print: result};
-					console.log('obj: ' + JSON.stringify(obj));
+					//console.log('obj: ' + JSON.stringify(obj));
 					res.render('customer/viewreservations', obj);
 				}
 			});
